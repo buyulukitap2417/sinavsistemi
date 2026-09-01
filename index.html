@@ -99,7 +99,7 @@
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.6); }
 
         /* Çizim Tuvali */
-        #whiteboard-canvas { touch-action: none; display: block; background: transparent; }
+        #whiteboard-canvas, #eval-whiteboard-canvas { touch-action: none; display: block; background: transparent; }
         .canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 25; }
         .canvas-container.active { pointer-events: auto; }
         .canvas-container.active.cursor-pen { cursor: crosshair; }
@@ -157,6 +157,23 @@
             box-shadow: 0 2px 6px rgba(79, 70, 229, 0.4);
         }
 
+        /* 🚨 5+ DAKİKA ALARM YANIP SÖNME EFEKTİ (RED WARNING FLASH) */
+        @keyframes alarm-pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+                border-color: #ef4444;
+                background-color: rgba(239, 68, 68, 0.15);
+            }
+            50% {
+                box-shadow: 0 0 24px 6px rgba(239, 68, 68, 0.95);
+                border-color: #ff0000;
+                background-color: rgba(239, 68, 68, 0.35);
+            }
+        }
+        .alarm-flash {
+            animation: alarm-pulse 0.9s ease-in-out infinite !important;
+        }
+
         /* Arkaplan Gradiyenti */
         .abstract-bg {
             position: fixed;
@@ -187,6 +204,12 @@
         .font-size-sm { font-size: 0.925rem; line-height: 1.5; }
         .font-size-md { font-size: 1.125rem; line-height: 1.6; }
         .font-size-lg { font-size: 1.325rem; line-height: 1.7; }
+
+        @media print {
+            #main-nav, .no-print { display: none !important; }
+            body { background: white !important; color: black !important; }
+            .view-section { display: block !important; }
+        }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col custom-scrollbar select-none">
@@ -624,7 +647,7 @@
             <div class="p-5 sm:p-6 overflow-y-auto custom-scrollbar flex-1 space-y-5">
                 <!-- Canlı Durum ve Konum Şeridi -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div class="glass p-3.5 rounded-2xl border flex flex-col justify-center">
+                    <div id="live-pos-card" class="glass p-3.5 rounded-2xl border flex flex-col justify-center transition-all">
                         <span class="text-[10px] font-black uppercase text-slate-400">Şu An Bulunduğu Yer</span>
                         <h4 id="live-current-pos" class="text-sm font-black text-brand-600 dark:text-brand-400 mt-1">📍 Soru #1</h4>
                     </div>
@@ -662,7 +685,7 @@
                 <div>
                     <h4 class="text-xs font-black uppercase text-slate-400 mb-2.5 flex items-center justify-between">
                         <span>Soruların Anlık Durumu</span>
-                        <span class="text-[9px] font-normal text-slate-400">🔵 Aktif Soru | 🟢 Doğru | 🔴 Yanlış</span>
+                        <span class="text-[9px] font-normal text-slate-400">🔵 Aktif Soru | 🟢 Doğru | 🔴 Yanlış | ⏱️ Geçen Süre</span>
                     </h4>
                     <div id="live-questions-matrix" class="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-60 overflow-y-auto custom-scrollbar pr-1"></div>
                 </div>
@@ -750,7 +773,7 @@
         </div>
     </div>
 
-    <!-- 9. DETAYLI KARNE & ANALİZ MODALI -->
+    <!-- 9. DETAYLI KARNE & ANALİZ MODALI (HIZLI ÖNİZLEME) -->
     <div id="details-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md z-[110] hidden items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-3xl shadow-2xl max-h-[85vh] flex flex-col border border-white/10 animate-slide-up">
             <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-950/50 rounded-t-3xl">
@@ -1001,7 +1024,7 @@
         </div>
     </section>
 
-    <!-- 14. SONUÇ VE KARNE RAPORU -->
+    <!-- 14. SONUÇ VE KARNE RAPORU (ÖĞRENCİ RAPORU) -->
     <section id="result-section" class="view-section hidden max-w-3xl mx-auto my-auto px-4 py-12 text-center">
         <div class="glass p-8 sm:p-12 rounded-[40px] shadow-2xl relative overflow-hidden border-white/30 text-left">
             <div class="text-center mb-8">
@@ -1042,6 +1065,157 @@
         </div>
     </section>
 
+    <!-- 15. ÖĞRETMEN KARNE ANALİZİ VE CANLI ANLATIM / SORU ÇÖZÜM MASASI -->
+    <section id="teacher-eval-section" class="view-section hidden max-w-7xl mx-auto px-4 sm:px-6 py-6 pb-28 text-left">
+        <!-- Üst Başlık & Kontrol Şeridi -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 bg-white/60 dark:bg-slate-900/60 p-5 sm:p-6 rounded-3xl glass border-white/40">
+            <div class="flex items-center gap-3">
+                <button onclick="navigate('manage-exam')" class="w-11 h-11 rounded-2xl bg-white dark:bg-slate-800 shadow-md flex items-center justify-center text-brand-600 hover:bg-brand-600 hover:text-white transition-all border border-slate-200 dark:border-slate-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                </button>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h2 id="eval-student-name" class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white uppercase leading-tight">Öğrenci Karne Analizi</h2>
+                        <span id="eval-status-badge" class="text-[10px] font-black uppercase bg-emerald-500/15 text-emerald-600 px-2.5 py-0.5 rounded-md">YAYINDA</span>
+                    </div>
+                    <p id="eval-exam-title" class="text-xs font-bold text-slate-400 mt-0.5">Sınav Adı • Çözüm & Anlatım Masası</p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
+                <!-- Çizim / Kalem Butonu -->
+                <button onclick="toggleEvalWhiteboard()" id="btn-eval-wb-toggle" class="btn-hover bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl font-black text-xs uppercase flex items-center gap-2 shadow-lg shadow-brand-500/25 transition">
+                    <span>✏️</span>
+                    <span id="eval-wb-btn-label">Çözüm Çizimini Aç</span>
+                </button>
+
+                <!-- Yazdır / PDF -->
+                <button onclick="window.print()" class="bg-slate-100 dark:bg-slate-800 hover:bg-white text-slate-700 dark:text-slate-200 px-3.5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-1.5 border border-slate-200 dark:border-slate-700 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                    <span>Yazdır</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- İki Kolonlu Ana Çalışma Alanı -->
+        <div class="grid lg:grid-cols-12 gap-6">
+            <!-- Sol: Soru Görüntüleyici ve Çözüm Çizim Alanı (8 Kolon) -->
+            <div class="lg:col-span-8 space-y-4">
+                <div id="eval-q-card" class="relative glass bg-white/80 dark:bg-slate-900/80 rounded-[32px] shadow-xl border-white/50 dark:border-slate-800/80 min-h-[500px] overflow-hidden flex flex-col">
+                    
+                    <!-- Soru Üst Başlığı (No, Süre, Öğrenci Cevabı vs Doğru Cevap) -->
+                    <div class="p-4 sm:px-6 border-b border-slate-100 dark:border-slate-800/60 flex flex-wrap justify-between items-center gap-2 bg-white/40 dark:bg-slate-900/40">
+                        <div class="flex items-center gap-2">
+                            <span id="eval-q-badge" class="px-3 py-1 rounded-xl bg-brand-600 text-white font-mono font-black text-xs">SORU 1</span>
+                            <span id="eval-q-time-badge" class="px-2.5 py-0.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono font-bold text-[11px]">⏱️ 0 sn</span>
+                        </div>
+
+                        <!-- Cevap Karşılaştırma Rozetleri -->
+                        <div class="flex items-center gap-2">
+                            <span id="eval-student-ans-badge" class="px-2.5 py-1 rounded-xl text-xs font-mono font-black">Öğrenci: -</span>
+                            <span id="eval-correct-ans-badge" class="px-2.5 py-1 rounded-xl bg-emerald-500/15 text-emerald-600 font-mono font-black text-xs">Doğru: A</span>
+                        </div>
+                    </div>
+
+                    <!-- Soru Gövdesi -->
+                    <div id="eval-q-container" class="p-6 sm:p-8 relative z-0 flex-1 overflow-y-auto custom-scrollbar"></div>
+
+                    <!-- Şıklar Detay Görünümü -->
+                    <div id="eval-q-choices-container" class="p-4 sm:p-5 glass bg-white/60 dark:bg-slate-900/60 border-t border-slate-100 dark:border-slate-800/60 flex justify-center gap-3 sm:gap-4 z-[20] flex-wrap"></div>
+
+                    <!-- Öğretmen Çizim Katmanı -->
+                    <div id="eval-canvas-container" class="canvas-container">
+                        <canvas id="eval-whiteboard-canvas"></canvas>
+                    </div>
+                </div>
+
+                <!-- Çizim Araçları ve Soru Navigasyon Çubuğu -->
+                <div class="glass p-3.5 sm:p-4 rounded-2xl shadow-lg flex flex-wrap items-center justify-between gap-3 border-white/40">
+                    <!-- Çizim Araçları Paneli -->
+                    <div id="eval-wb-tools-panel" class="hidden flex items-center gap-2 flex-wrap">
+                        <!-- Kalem / Fosforlu / Silgi -->
+                        <div class="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
+                            <button onclick="setEvalTool('pen')" id="eval-tool-pen" class="p-2 rounded-lg bg-brand-600 text-white shadow-sm eval-tool-btn" title="Kalem">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                            </button>
+                            <button onclick="setEvalTool('highlighter')" id="eval-tool-highlighter" class="p-2 rounded-lg text-slate-500 hover:text-amber-500 eval-tool-btn" title="Fosforlu">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
+                            </button>
+                            <button onclick="setEvalTool('eraser')" id="eval-tool-eraser" class="p-2 rounded-lg text-slate-500 hover:text-rose-500 eval-tool-btn" title="Silgi">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            </button>
+                        </div>
+
+                        <!-- Renk Paleti -->
+                        <div class="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
+                            <button onclick="setEvalPenColor('#ef4444')" class="w-5 h-5 rounded-full border border-white" style="background: #ef4444;" title="Kırmızı"></button>
+                            <button onclick="setEvalPenColor('#4f46e5')" class="w-5 h-5 rounded-full border border-white" style="background: #4f46e5;" title="İndigo"></button>
+                            <button onclick="setEvalPenColor('#000000')" class="w-5 h-5 rounded-full border border-white" style="background: #000000;" title="Siyah"></button>
+                            <button onclick="setEvalPenColor('#10b981')" class="w-5 h-5 rounded-full border border-white" style="background: #10b981;" title="Yeşil"></button>
+                            <button onclick="setEvalPenColor('#f59e0b')" class="w-5 h-5 rounded-full border border-white" style="background: #f59e0b;" title="Sarı"></button>
+                        </div>
+
+                        <button onclick="undoEvalStroke()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-600 dark:text-slate-300 text-xs font-bold" title="Geri Al">
+                            ↩
+                        </button>
+                        <button onclick="clearEvalCanvas(true)" class="p-2 rounded-xl bg-rose-50 dark:bg-rose-950/30 hover:bg-rose-600 hover:text-white text-rose-500 text-xs font-bold" title="Temizle">
+                            🗑️
+                        </button>
+                    </div>
+
+                    <!-- İleri / Geri Navigasyon -->
+                    <div class="flex items-center gap-2 ml-auto">
+                        <button id="eval-btn-prev" onclick="navEvalQ(-1)" class="btn-hover px-4 py-2 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-black uppercase">
+                            ← Önceki
+                        </button>
+                        <button id="eval-btn-next" onclick="navEvalQ(1)" class="btn-hover px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-black uppercase shadow-md">
+                            Sonraki →
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sağ: Öğrencinin Karnesi & Hızlı Soru Seçim Matrisi (4 Kolon) -->
+            <div class="lg:col-span-4 space-y-4">
+                <!-- Karne Özet Kartı -->
+                <div class="glass p-6 rounded-[32px] shadow-lg border-white/20 text-center">
+                    <div id="eval-score-circle" class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-tr from-brand-600 to-indigo-500 text-white font-mono font-black text-3xl shadow-xl shadow-brand-500/30 mb-3 border-4 border-white/30">
+                        %0
+                    </div>
+                    <h3 class="text-sm font-black uppercase tracking-wider text-slate-800 dark:text-white">Genel Başarı Karnesi</h3>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4 text-center font-bold text-xs">
+                        <div class="bg-emerald-500/10 text-emerald-600 py-2 rounded-xl">
+                            <p class="text-[9px] uppercase">Doğru</p>
+                            <h4 id="eval-stat-correct" class="text-base font-black">0</h4>
+                        </div>
+                        <div class="bg-rose-500/10 text-rose-600 py-2 rounded-xl">
+                            <p class="text-[9px] uppercase">Yanlış</p>
+                            <h4 id="eval-stat-wrong" class="text-base font-black">0</h4>
+                        </div>
+                        <div class="bg-slate-100 dark:bg-slate-800 text-slate-500 py-2 rounded-xl">
+                            <p class="text-[9px] uppercase">Boş</p>
+                            <h4 id="eval-stat-empty" class="text-base font-black">0</h4>
+                        </div>
+                        <div class="bg-brand-500/10 text-brand-600 py-2 rounded-xl">
+                            <p class="text-[9px] uppercase">Net</p>
+                            <h4 id="eval-stat-net" class="text-base font-black">0</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Soru Soru Atlama Listesi -->
+                <div class="glass p-5 rounded-[32px] shadow-lg border-white/20">
+                    <h4 class="text-xs font-black uppercase text-slate-400 mb-3 flex items-center justify-between">
+                        <span>Sorular ve Harcanan Süre</span>
+                        <span class="text-[9px] text-slate-400 font-bold">Tıklayarak Soruya Git</span>
+                    </h4>
+                    <div id="eval-questions-list" class="space-y-2 max-h-[420px] overflow-y-auto custom-scrollbar pr-1.5"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- SİNTEZ SES MOTORU VE UYGULAMA MANTIĞI -->
     <script>
         // --- SUPABASE VERİTABANI KONFİGÜRASYONU ---
@@ -1060,8 +1234,17 @@
         let penColor = '#000000', brushSize = 2, activeFontSize = 'md', optViewMode = 'list';
         let isAudioEnabled = true;
 
+        // Soru Başına Geçen Süre Takibi (Öğrenci)
+        let curQStartTime = Date.now();
+        let studentQuestionTimes = {}; // { 0: sec, 1: sec, ... }
+
         // Canlı Takip Değişkenleri
         let activeLiveSubId = null, liveChannel = null, teacherExamChannel = null, teacherPollInterval = null, activeLiveExamStudents = [];
+
+        // Öğretmen Değerlendirme & Anlatım Masası Değişkenleri
+        let evalCurrentSub = null, evalQIdx = 0, evalWbActive = false, evalCanvas, evalCtx, evalDrawing = false;
+        let evalTool = 'pen', evalPenColor = '#ef4444', evalBrushSize = 3;
+        let evalQuestionStrokes = {}, evalCurrentStroke = [];
 
         // --- SEKMEDEN AYRILMA / KAPATMA KORUMASI ---
         window.addEventListener('beforeunload', (e) => {
@@ -1097,6 +1280,14 @@
             document.getElementById('icon-sound-on').classList.toggle('hidden', !isAudioEnabled);
             document.getElementById('icon-sound-off').classList.toggle('hidden', isAudioEnabled);
             showToast(isAudioEnabled ? "Ses efektleri açıldı" : "Ses efektleri kapatıldı");
+        }
+
+        // Süre Formatlayıcı Yardımcı
+        function formatDuration(sec) {
+            if (!sec || sec < 0) return '0 sn';
+            const m = Math.floor(sec / 60), s = sec % 60;
+            if (m > 0) return `${m} dk ${s > 0 ? s + ' sn' : ''}`;
+            return `${s} sn`;
         }
 
         // --- GÖRSEL SIKIŞTIRMA FONKSİYONU ---
@@ -1146,6 +1337,10 @@
                 const isDark = document.documentElement.classList.contains('dark');
                 ctx.strokeStyle = (isDark && penColor === '#000000') ? '#ffffff' : penColor;
             }
+            if(evalCtx) {
+                const isDark = document.documentElement.classList.contains('dark');
+                evalCtx.strokeStyle = (isDark && evalPenColor === '#000000') ? '#ffffff' : evalPenColor;
+            }
         }
         function loadTheme() {
             if (localStorage.getItem('alisengul_theme') === 'dark' || (!localStorage.getItem('alisengul_theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -1161,7 +1356,7 @@
             renderExamQuestion();
         }
 
-        // --- GELİŞMİŞ ÇİZİM VE TAHTA MOTORU (WHITEBOARD) ---
+        // --- GELİŞMİŞ ÇİZİM VE TAHTA MOTORU (ÖĞRENCİ WHITEBOARD) ---
         let canvas, ctx, drawing = false, tool = 'pen', wbActive = false;
         let currentStroke = [];
 
@@ -1360,7 +1555,6 @@
                 setTimeout(init, 100);
             }
 
-            // Klavye Kısayolları Dinleyicisi
             window.addEventListener('keydown', handleKeyNav);
         }
 
@@ -1489,7 +1683,7 @@
             _sb.from('students').select('id', { count: 'exact' }).then(res => {
                 if(res.count !== null) document.getElementById('stat-total-students').innerText = res.count;
             });
-            _sb.from('submissions').select('id', { count: 'exact' }).then(res => {
+            _sb.from('submissions').select('id, answers', { count: 'exact' }).then(res => {
                 if(res.count !== null) document.getElementById('stat-total-subs').innerText = res.count;
             });
         }
@@ -1598,7 +1792,7 @@
                 if(isAllLiveOpen) refreshAllLiveGrid();
             }).subscribe();
 
-            // Otomatik canlı yoklama periyodu (Fallback)
+            // Otomatik canlı yoklama periyodu (3.5 sn)
             if (teacherPollInterval) clearInterval(teacherPollInterval);
             teacherPollInterval = setInterval(() => {
                 const mSec = document.getElementById('manage-exam-section');
@@ -1773,12 +1967,15 @@
                 const meta = sub?.answers?._meta || {};
                 const lastPing = meta.last_ping ? new Date(meta.last_ping) : (sub?.created_at ? new Date(sub.created_at) : null);
                 const isOnline = sub && sub.status === 'active' && lastPing && ((Date.now() - lastPing.getTime()) < 45000);
+                const isStuck = isOnline && (meta.current_q_time >= 300);
+
                 return `
-                <div class="glass p-3 rounded-xl border flex justify-between items-center gap-2">
+                <div class="glass p-3 rounded-xl border flex justify-between items-center gap-2 ${isStuck ? 'border-rose-500 bg-rose-500/10' : ''}">
                     <div class="flex flex-col flex-1">
                         <div class="flex items-center gap-1.5">
                             <span class="font-black text-xs uppercase text-slate-800 dark:text-white">${s.name}</span>
                             ${isOnline ? `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping" title="Aktif Sınavda"></span>` : ''}
+                            ${isStuck ? `<span class="alarm-flash text-[8px] font-black text-white bg-rose-600 px-1.5 py-0.5 rounded uppercase">🚨 5+ Dk Takıldı!</span>` : ''}
                         </div>
                         <span class="font-mono text-[9px] text-brand-600 dark:text-brand-400 font-bold">ŞİFRE: ${s.password}</span>
                     </div>
@@ -1800,20 +1997,22 @@
                 const isActive = sub.status === 'active' && lastPing && ((Date.now() - lastPing.getTime()) < 45000);
                 const isPending = sub.status === 'pending';
                 const isPublished = sub.status === 'published';
+                const isStuck = isActive && (meta.current_q_time >= 300);
 
                 return `
-                <div class="glass p-3.5 rounded-2xl flex justify-between items-center border gap-2">
-                    <div class="cursor-pointer flex-1" onclick="viewDetails('${sub.id}')">
+                <div class="glass p-3.5 rounded-2xl flex justify-between items-center border gap-2 ${isStuck ? 'border-rose-500/70 bg-rose-500/10' : ''}">
+                    <div class="cursor-pointer flex-1" onclick="openTeacherEval('${sub.id}')">
                         <div class="flex items-center gap-2">
                             <p class="font-black text-xs uppercase text-slate-800 dark:text-white">${sub.student_name}</p>
-                            ${isActive ? `<span class="px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-600 font-extrabold text-[8px] uppercase animate-pulse">ÇÖZÜYOR</span>` : isPending ? `<span class="px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-600 font-extrabold text-[8px] uppercase">BİTTİ (ONAY BEKLİYOR)</span>` : `<span class="px-2 py-0.5 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-500 font-extrabold text-[8px] uppercase">TAMAMLANDI</span>`}
+                            ${isStuck ? `<span class="alarm-flash text-[8px] font-black text-white bg-rose-600 px-1.5 py-0.5 rounded uppercase">🚨 Soru #${(meta.current_q||0)+1}'de 5+ DK</span>` : ''}
+                            ${isActive && !isStuck ? `<span class="px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-600 font-extrabold text-[8px] uppercase animate-pulse">ÇÖZÜYOR</span>` : isPending ? `<span class="px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-600 font-extrabold text-[8px] uppercase">BİTTİ (ONAY BEKLİYOR)</span>` : isPublished ? `<span class="px-2 py-0.5 rounded-md bg-indigo-500/15 text-indigo-600 font-extrabold text-[8px] uppercase">YAYINLANDI</span>` : `<span class="px-2 py-0.5 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-500 font-extrabold text-[8px] uppercase">TAMAMLANDI</span>`}
                         </div>
-                        <p class="text-[9px] font-bold text-brand-600 dark:text-brand-400 uppercase mt-0.5">İncele & Karne →</p>
+                        <p class="text-[9px] font-bold text-brand-600 dark:text-brand-400 uppercase mt-0.5">Karne & Soru Çözüm Masası →</p>
                     </div>
                     <div class="flex items-center gap-1.5">
                         <button onclick="openLiveStudentMonitor('${sub.id}')" class="px-2.5 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-600 hover:text-white text-emerald-600 text-[10px] font-black uppercase transition flex items-center gap-1 shadow-sm">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            <span>Canlı Takip</span>
+                            <span>Canlı</span>
                         </button>
                         <button onclick="giveExtraTime('${sub.id}')" title="+Ek Süre Ver" class="bg-amber-500/10 text-amber-600 p-2 rounded-xl hover:bg-amber-500 hover:text-white transition">
                             ⏱️
@@ -1821,8 +2020,8 @@
                         ${isPending
                             ? `<button onclick="publishResult('${sub.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl font-black text-[9px] uppercase shadow">Yayınla</button>`
                             : isPublished
-                            ? `<span class="text-emerald-500 font-bold text-[10px] flex items-center gap-1">✓ Yayında</span>`
-                            : `<span class="text-slate-400 font-bold text-[10px] flex items-center gap-1">Devam Ediyor</span>`}
+                            ? `<button onclick="openTeacherEval('${sub.id}')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1.5 rounded-xl font-black text-[9px] uppercase shadow">İncele / Anlat</button>`
+                            : `<span class="text-slate-400 font-bold text-[10px] flex items-center gap-1">Devam</span>`}
                     </div>
                 </div>`;
             }).join('');
@@ -1883,8 +2082,9 @@
         window.publishResult = async (id) => {
             await _sb.from('submissions').update({ status: 'published' }).eq('id', id);
             soundSuccess();
-            showToast("Sonuç öğrenciye yayınlandı!");
+            showToast("Sonuç öğrenciye yayınlandı! Öğrenci karnesi ve anlatım masası açılıyor...");
             fetchStudentsAndSubs();
+            setTimeout(() => openTeacherEval(id), 250);
         };
 
         window.publishAllResults = async () => {
@@ -1941,10 +2141,16 @@
             const lastPingDate = meta.last_ping ? new Date(meta.last_ping) : (sub.created_at ? new Date(sub.created_at) : new Date());
             const diffSeconds = Math.max(0, Math.round((Date.now() - lastPingDate.getTime()) / 1000));
             const isOnline = sub.status === 'active' && diffSeconds < 45;
+            const curQTime = meta.current_q_time || 0;
+            const isStuck = isOnline && (curQTime >= 300); // 5+ dakika uyarısı!
 
             const statusPill = document.getElementById('live-status-pill');
             const pulseDot = document.getElementById('live-pulse-dot');
-            if(isOnline) {
+            if(isStuck) {
+                statusPill.className = "alarm-flash text-[10px] font-black uppercase text-white bg-rose-600 px-3 py-1 rounded-full shadow-lg";
+                statusPill.innerText = `🚨 5+ DK AYNI SORUDA! (${formatDuration(curQTime)})`;
+                pulseDot.className = "w-3.5 h-3.5 rounded-full bg-rose-500 animate-ping";
+            } else if(isOnline) {
                 statusPill.className = "text-[10px] font-black uppercase bg-emerald-500/15 text-emerald-600 px-2.5 py-0.5 rounded-full";
                 statusPill.innerText = "🟢 ÇÖZÜYOR (CANLI)";
                 pulseDot.className = "w-3.5 h-3.5 rounded-full bg-emerald-500 animate-ping";
@@ -1962,15 +2168,27 @@
                 pulseDot.className = "w-3.5 h-3.5 rounded-full bg-slate-400";
             }
 
-            // Anlık Konum
+            // Anlık Konum ve 5+ Dakika Kırmızı Işık Uyarısı
             const lastQ = meta.current_q !== undefined ? meta.current_q : 0;
-            document.getElementById('live-current-pos').innerText = meta.current_page || `📍 Soru #${lastQ + 1}`;
+            const posCard = document.getElementById('live-pos-card');
+            const posText = document.getElementById('live-current-pos');
+
+            if(isStuck) {
+                posCard.className = 'glass p-3.5 rounded-2xl border alarm-flash';
+                posText.innerHTML = `<span class="text-rose-600 font-black">🚨 Soru #${lastQ + 1} (${formatDuration(curQTime)} - 5+ DK TAKILDI!)</span>`;
+            } else {
+                posCard.className = 'glass p-3.5 rounded-2xl border';
+                posText.innerHTML = `<span class="text-brand-600 dark:text-brand-400 font-black">📍 Soru #${lastQ + 1} ${isOnline ? `(Bu Soruda: ${formatDuration(curQTime)})` : ''}</span>`;
+            }
+
             document.getElementById('live-last-ping').innerText = diffSeconds < 10 ? "Az önce" : `${diffSeconds} sn önce`;
 
             // Skor & Doğru / Yanlış Hesaplama
             let correct = 0, wrong = 0, filled = 0;
             const qs = curExam ? (curExam.questions || []) : [];
             const answers = sub.answers || {};
+            const qTimes = meta.q_times || {};
+
             qs.forEach((q, i) => {
                 const a = answers[i];
                 if(a && a !== '_meta') {
@@ -1994,16 +2212,24 @@
                 const isC = sAns === q.correct;
                 const isEmp = !sAns;
                 const isCurrent = lastQ === i;
+                const timeOnQ = qTimes[i] || (isCurrent ? curQTime : 0);
+                const isQStuck = isCurrent && isOnline && (timeOnQ >= 300);
 
                 return `
-                    <div class="p-2.5 rounded-xl border-2 flex items-center justify-between text-xs font-bold transition ${isCurrent ? 'border-brand-600 bg-brand-500/10 ring-2 ring-brand-500/30' : isEmp ? 'border-slate-200 dark:border-slate-800 bg-white/40 dark:bg-slate-900/40' : isC ? 'border-emerald-500/30 bg-emerald-500/10' : 'border-rose-500/30 bg-rose-500/10'}">
-                        <div class="flex items-center gap-1.5">
-                            <span class="w-5 font-mono text-[10px] text-slate-400">#${i+1}</span>
-                            ${isCurrent ? `<span class="text-[8px] bg-brand-500 text-white px-1.5 py-0.5 rounded font-black">ŞU AN</span>` : ''}
+                    <div class="p-2.5 rounded-xl border-2 flex flex-col justify-between text-xs font-bold transition ${isQStuck ? 'alarm-flash border-rose-500' : isCurrent ? 'border-brand-600 bg-brand-500/10 ring-2 ring-brand-500/30' : isEmp ? 'border-slate-200 dark:border-slate-800 bg-white/40 dark:bg-slate-900/40' : isC ? 'border-emerald-500/30 bg-emerald-500/10' : 'border-rose-500/30 bg-rose-500/10'}">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-1.5">
+                                <span class="w-5 font-mono text-[10px] text-slate-400">#${i+1}</span>
+                                ${isQStuck ? `<span class="text-[8px] bg-rose-600 text-white px-1.5 py-0.5 rounded font-black animate-bounce">🚨 5+ DK</span>` : isCurrent ? `<span class="text-[8px] bg-brand-500 text-white px-1.5 py-0.5 rounded font-black">ŞU AN</span>` : ''}
+                            </div>
+                            <div class="flex items-center gap-2 font-mono">
+                                <span class="${isEmp ? 'text-slate-400' : isC ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'} font-black text-sm">${sAns || '-'}</span>
+                                <span class="text-[9px] text-slate-400">(${q.correct})</span>
+                            </div>
                         </div>
-                        <div class="flex items-center gap-2 font-mono">
-                            <span class="${isEmp ? 'text-slate-400' : isC ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'} font-black text-sm">${sAns || '-'}</span>
-                            <span class="text-[9px] text-slate-400">(${q.correct})</span>
+                        <div class="text-[9px] text-slate-400 mt-1 font-semibold flex justify-between">
+                            <span>Süre:</span>
+                            <span class="${timeOnQ >= 300 ? 'text-rose-600 font-black' : 'text-slate-600 dark:text-slate-300 font-bold'}">${formatDuration(timeOnQ)}</span>
                         </div>
                     </div>`;
             }).join('');
@@ -2068,17 +2294,19 @@
 
                 const lastPing = meta.last_ping ? new Date(meta.last_ping) : (sub?.created_at ? new Date(sub.created_at) : null);
                 const isOnline = sub && sub.status === 'active' && lastPing && ((Date.now() - lastPing.getTime()) < 45000);
+                const curQTime = meta.current_q_time || 0;
+                const isStuck = isOnline && (curQTime >= 300);
 
                 return `
-                    <div class="glass p-4 rounded-2xl border flex flex-col justify-between gap-3 hover:shadow-lg transition">
+                    <div class="glass p-4 rounded-2xl border flex flex-col justify-between gap-3 hover:shadow-lg transition ${isStuck ? 'alarm-flash border-rose-500' : ''}">
                         <div>
                             <div class="flex justify-between items-start">
                                 <div>
                                     <h4 class="font-black text-sm uppercase text-slate-800 dark:text-white">${s.name}</h4>
                                     <span class="text-[9px] font-mono text-slate-400">Şifre: ${s.password}</span>
                                 </div>
-                                <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase ${isOnline ? 'bg-emerald-500/15 text-emerald-600 animate-pulse' : sub?.status === 'published' ? 'bg-indigo-500/15 text-indigo-600' : sub?.status === 'pending' ? 'bg-amber-500/15 text-amber-600' : 'bg-slate-200 dark:bg-slate-800 text-slate-400'}">
-                                    ${isOnline ? '🟢 ÇÖZÜYOR' : sub?.status === 'published' ? '✓ YAYINDA' : sub?.status === 'pending' ? '⏳ BİTİRDİ' : '⚪ BEKLİYOR'}
+                                <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase ${isStuck ? 'alarm-flash text-white bg-rose-600' : isOnline ? 'bg-emerald-500/15 text-emerald-600 animate-pulse' : sub?.status === 'published' ? 'bg-indigo-500/15 text-indigo-600' : sub?.status === 'pending' ? 'bg-amber-500/15 text-amber-600' : 'bg-slate-200 dark:bg-slate-800 text-slate-400'}">
+                                    ${isStuck ? `🚨 5+ DK TAKILDI!` : isOnline ? '🟢 ÇÖZÜYOR' : sub?.status === 'published' ? '✓ YAYINDA' : sub?.status === 'pending' ? '⏳ BİTİRDİ' : '⚪ BEKLİYOR'}
                                 </span>
                             </div>
 
@@ -2089,7 +2317,7 @@
                             </div>
 
                             <p class="text-[10px] font-semibold text-slate-400 mt-2">
-                                Konum: <span class="font-bold text-slate-700 dark:text-slate-200">${meta.current_page || (sub ? 'Sınava Katıldı' : 'Giriş Bekleniyor')}</span>
+                                Konum: <span class="font-bold text-slate-700 dark:text-slate-200">${meta.current_page || (sub ? 'Sınava Katıldı' : 'Giriş Bekleniyor')} ${isOnline ? `(${formatDuration(curQTime)})` : ''}</span>
                             </p>
                         </div>
 
@@ -2114,12 +2342,18 @@
         async function sendLiveSync(pageDesc = null) {
             if(isTeacherMode || !curStudentSession || !_sb) return;
             try {
+                // Aktif soruda geçen süreyi hesapla
+                const elapsedNow = Math.floor((Date.now() - curQStartTime) / 1000);
+                const currentQTotalTime = (studentQuestionTimes[curQIdx] || 0) + elapsedNow;
+
                 const pDesc = pageDesc || `Soru #${curQIdx + 1}`;
                 const payloadAnswers = {
                     ...stdAnswers,
                     _meta: {
                         current_q: curQIdx,
                         current_page: pDesc,
+                        current_q_time: currentQTotalTime,
+                        q_times: { ...studentQuestionTimes, [curQIdx]: currentQTotalTime },
                         last_ping: new Date().toISOString()
                     }
                 };
@@ -2184,7 +2418,6 @@
             setCentralLoader(true, "Sınav Başlatılıyor...", "Soru havuzu hazırlanıyor", 30);
 
             try {
-                // Sınav Sorgusu
                 let { data: ex } = await _sb.from('exams').select('*').eq('code', eid).maybeSingle();
                 if(!ex && /^[0-9a-f]{8}/.test(eid)) {
                     let { data: ex2 } = await _sb.from('exams').select('*').eq('id', eid).maybeSingle();
@@ -2196,7 +2429,6 @@
                 const { data: std } = await _sb.from('students').select('*').eq('exam_id', ex.id).eq('password', p).maybeSingle();
                 if (!std) throw new Error("Hatalı öğrenci şifresi! Lütfen size verilen özel şifreyi giriniz.");
 
-                // TEKRAR GİRİŞ ENGELİ (KRİTİK GÜVENLİK KONTROLÜ)
                 const { data: existingSub } = await _sb.from('submissions').select('*').eq('exam_id', ex.id).eq('student_id', std.id).maybeSingle();
                 if (existingSub) {
                     if (existingSub.status === 'pending') {
@@ -2208,7 +2440,6 @@
 
                 curExam = ex; curStudentSession = { std, ex }; isTeacherMode = false;
                 
-                // Görselleri Arka Planda Önbelleğe Al
                 if (ex.questions && ex.questions.length > 0) {
                     ex.questions.forEach((q, i) => {
                         if (q.image && i < 3) {
@@ -2251,6 +2482,7 @@
         async function startExam() {
             navigate('exam');
             curQIdx = 0; stdAnswers = {}; flaggedQs.clear(); struckChoices = {};
+            curQStartTime = Date.now(); studentQuestionTimes = {};
             document.getElementById('active-title').innerText = curExam.title;
             document.getElementById('student-name-display').innerText = isTeacherMode ? "Öğretmen Çözüm Modu" : curStudentSession.std.name;
 
@@ -2260,10 +2492,9 @@
                 if(!isTeacherMode) {
                     startTimer(curExam.duration || 40);
 
-                    // Başlangıç Submission Kaydı Oluştur / Getir
                     try {
                         const { data: existingSub } = await _sb.from('submissions').select('*').eq('exam_id', curExam.id).eq('student_id', curStudentSession.std.id).maybeSingle();
-                        const initMetaAnswers = { _meta: { current_q: 0, current_page: 'Soru #1', last_ping: new Date().toISOString() } };
+                        const initMetaAnswers = { _meta: { current_q: 0, current_page: 'Soru #1', current_q_time: 0, q_times: {}, last_ping: new Date().toISOString() } };
                         if (existingSub) {
                             curSubmissionId = existingSub.id;
                             await _sb.from('submissions').update({ answers: initMetaAnswers, status: 'active' }).eq('id', curSubmissionId);
@@ -2281,7 +2512,7 @@
                         console.error("Submission init error:", e);
                     }
 
-                    // Canlı Heartbeat Başlat
+                    // Canlı Heartbeat Başlat (3.5 sn)
                     if(heartbeatInt) clearInterval(heartbeatInt);
                     heartbeatInt = setInterval(() => sendLiveSync(), 3500);
                 }
@@ -2395,7 +2626,12 @@
         };
 
         window.jumpToQ = (i) => {
-            curQIdx = i;
+            if (curQIdx !== i) {
+                const elapsed = Math.floor((Date.now() - curQStartTime) / 1000);
+                studentQuestionTimes[curQIdx] = (studentQuestionTimes[curQIdx] || 0) + elapsed;
+                curQIdx = i;
+                curQStartTime = Date.now();
+            }
             renderExamQuestion();
             renderOpticalForm();
             soundClick();
@@ -2442,7 +2678,10 @@
                 if(isTeacherMode) navigate('teacher-dashboard');
                 else finishExamPrompt();
             } else {
+                const elapsed = Math.floor((Date.now() - curQStartTime) / 1000);
+                studentQuestionTimes[curQIdx] = (studentQuestionTimes[curQIdx] || 0) + elapsed;
                 curQIdx += d;
+                curQStartTime = Date.now();
                 renderExamQuestion();
                 renderOpticalForm();
                 soundClick();
@@ -2478,11 +2717,16 @@
             navigate('wait');
             soundSuccess();
 
+            const elapsed = Math.floor((Date.now() - curQStartTime) / 1000);
+            studentQuestionTimes[curQIdx] = (studentQuestionTimes[curQIdx] || 0) + elapsed;
+
             const payloadAnswers = {
                 ...stdAnswers,
                 _meta: {
                     current_q: curQIdx,
                     current_page: 'Sınavı Tamamladı',
+                    current_q_time: studentQuestionTimes[curQIdx] || 0,
+                    q_times: studentQuestionTimes,
                     last_ping: new Date().toISOString(),
                     finished_at: new Date().toISOString()
                 }
@@ -2508,7 +2752,6 @@
             }
 
             if(sub) {
-                // Realtime Kanal Dinleyicisi
                 if(liveChannel) _sb.removeChannel(liveChannel);
                 liveChannel = _sb.channel(`sub_${sub.id}`).on('postgres_changes', {
                     event: 'UPDATE', schema: 'public', table: 'submissions', filter: `id=eq.${sub.id}`
@@ -2528,7 +2771,7 @@
             }
         }
 
-        // --- SONUÇ VE KARNE RAPORU GÖSTERİMİ ---
+        // --- SONUÇ VE KARNE RAPORU GÖSTERİMİ (ÖĞRENCİ) ---
         function showFinalResults(sub) {
             document.title = "Karneniz Hazır | Ali ŞENGÜL Sınav";
             navigate('result');
@@ -2595,23 +2838,313 @@
             document.getElementById('details-modal').classList.replace('hidden', 'flex');
         };
 
-        window.viewDetails = async (id) => {
-            const { data: sub } = await _sb.from('submissions').select('*').eq('id', id).single();
-            document.getElementById('modal-student-name').innerText = sub.student_name + " - Karne Raporu";
-            document.getElementById('modal-exam-subtitle').innerText = curExam.title;
-            document.getElementById('modal-answers-content').innerHTML = curExam.questions.map((q, i) => {
+        // --- 15. ÖĞRETMEN KARNE ANALİZİ VE CANLI ANLATIM / SORU ÇÖZÜM MASASI ---
+        window.openTeacherEval = async (subId) => {
+            setCentralLoader(true, "Öğrenci Karnesi Açılıyor...", "Soru verileri ve analiz yükleniyor", 40);
+            const { data: sub } = await _sb.from('submissions').select('*').eq('id', subId).single();
+            setCentralLoader(false);
+            if(!sub) return showToast("Öğrenci yanıtı bulunamadı.");
+
+            evalCurrentSub = sub;
+            evalQIdx = 0;
+            evalQuestionStrokes = {}; // Sıfırla
+
+            document.getElementById('eval-student-name').innerText = sub.student_name;
+            document.getElementById('eval-exam-title').innerText = `${curExam.title} • Çözüm & Anlatım Masası`;
+
+            const statusBadge = document.getElementById('eval-status-badge');
+            if(sub.status === 'published') {
+                statusBadge.className = 'text-[10px] font-black uppercase bg-emerald-500/15 text-emerald-600 px-2.5 py-0.5 rounded-md';
+                statusBadge.innerText = '✓ YAYINLANDI';
+            } else if(sub.status === 'pending') {
+                statusBadge.className = 'text-[10px] font-black uppercase bg-amber-500/15 text-amber-600 px-2.5 py-0.5 rounded-md';
+                statusBadge.innerText = '⏳ ONAY BEKLİYOR';
+            } else {
+                statusBadge.className = 'text-[10px] font-black uppercase bg-slate-200 dark:bg-slate-800 text-slate-500 px-2.5 py-0.5 rounded-md';
+                statusBadge.innerText = 'ÇÖZÜYOR';
+            }
+
+            // Skor Hesaplama
+            let correct = 0, wrong = 0, empty = 0;
+            const qs = curExam.questions || [];
+            qs.forEach((q, i) => {
+                const sAns = sub.answers ? sub.answers[i] : undefined;
+                if(!sAns) empty++;
+                else if(sAns === q.correct) correct++;
+                else wrong++;
+            });
+            const score = Math.round((correct / (qs.length || 1)) * 100);
+            const net = (correct - (wrong / 4)).toFixed(2);
+
+            document.getElementById('eval-score-circle').innerText = `%${score}`;
+            document.getElementById('eval-stat-correct').innerText = correct;
+            document.getElementById('eval-stat-wrong').innerText = wrong;
+            document.getElementById('eval-stat-empty').innerText = empty;
+            document.getElementById('eval-stat-net').innerText = net;
+
+            // Soru Soru Liste Oluşturma
+            const qTimes = (sub.answers && sub.answers._meta && sub.answers._meta.q_times) || {};
+            document.getElementById('eval-questions-list').innerHTML = qs.map((q, i) => {
                 const sAns = (sub.answers && sub.answers[i]) || '-';
                 const isC = sAns === q.correct;
+                const isEmp = sAns === '-';
+                const timeSec = qTimes[i] || 0;
+                const isStuck = timeSec >= 300;
+
                 return `
-                    <div class="glass p-3.5 rounded-2xl border-2 ${isC ? 'border-emerald-500/20 bg-emerald-500/5' : 'border-rose-500/20 bg-rose-500/5'}">
-                        <p class="text-xs font-bold text-slate-700 dark:text-slate-200 mb-2 truncate">#${i+1} - ${q.text || "Görsel Soru"}</p>
-                        <div class="flex gap-4 font-mono font-black text-xs">
-                            <span class="${isC ? 'text-emerald-600' : 'text-rose-600'}">Öğrenci: ${sAns}</span>
-                            <span class="text-brand-600">Doğru: ${q.correct}</span>
+                    <div onclick="jumpEvalQ(${i})" class="glass p-3 rounded-2xl border-2 flex justify-between items-center cursor-pointer transition hover:scale-[1.01] ${evalQIdx === i ? 'border-brand-600 ring-2 ring-brand-500/30' : isC ? 'border-emerald-500/30 bg-emerald-500/5' : isEmp ? 'border-slate-200 dark:border-slate-800' : 'border-rose-500/30 bg-rose-500/5'}">
+                        <div class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-lg bg-slate-200 dark:bg-slate-800 font-mono flex items-center justify-center text-[10px] font-black">#${i+1}</span>
+                            <span class="${isC ? 'text-emerald-600' : isEmp ? 'text-slate-400' : 'text-rose-600'} text-xs font-bold">${isC ? '✓ Doğru' : isEmp ? '○ Boş' : '✕ Yanlış'}</span>
+                            ${isStuck ? `<span class="text-[8px] font-black text-white bg-rose-600 px-1 rounded uppercase">5+ Dk</span>` : ''}
+                        </div>
+                        <div class="flex items-center gap-3 text-xs font-mono">
+                            <span class="text-slate-400 font-bold">Ö: ${sAns}</span>
+                            <span class="text-brand-600 font-bold">D: ${q.correct}</span>
+                            <span class="text-[10px] text-slate-400 font-bold bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">⏱️ ${formatDuration(timeSec)}</span>
                         </div>
                     </div>`;
             }).join('');
-            document.getElementById('details-modal').classList.replace('hidden', 'flex');
+
+            navigate('teacher-eval');
+            setTimeout(() => {
+                setupEvalWhiteboard();
+                renderEvalQuestion();
+            }, 100);
+        };
+
+        function renderEvalQuestion() {
+            if(!curExam || !evalCurrentSub) return;
+            const q = curExam.questions[evalQIdx];
+            if(!q) return;
+
+            const sAns = (evalCurrentSub.answers && evalCurrentSub.answers[evalQIdx]) || '-';
+            const isCorrect = sAns === q.correct;
+            const isEmp = sAns === '-';
+            const qTimes = (evalCurrentSub.answers && evalCurrentSub.answers._meta && evalCurrentSub.answers._meta.q_times) || {};
+            const timeSec = qTimes[evalQIdx] || 0;
+
+            document.getElementById('eval-q-badge').innerText = `SORU #${evalQIdx + 1} / ${curExam.questions.length}`;
+            
+            const timeBadge = document.getElementById('eval-q-time-badge');
+            timeBadge.innerText = `⏱️ Bu Soruda Harcanan: ${formatDuration(timeSec)}`;
+            if(timeSec >= 300) {
+                timeBadge.className = 'alarm-flash px-2.5 py-0.5 rounded-lg text-white font-mono font-black text-[11px]';
+            } else {
+                timeBadge.className = 'px-2.5 py-0.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono font-bold text-[11px]';
+            }
+
+            const stdAnsBadge = document.getElementById('eval-student-ans-badge');
+            stdAnsBadge.innerText = `Öğrenci Yanıtı: ${sAns} ${isCorrect ? '(✓ Doğru)' : isEmp ? '(○ Boş)' : '(✕ Yanlış)'}`;
+            stdAnsBadge.className = `px-2.5 py-1 rounded-xl text-xs font-mono font-black ${isCorrect ? 'bg-emerald-500/15 text-emerald-600' : isEmp ? 'bg-slate-200 dark:bg-slate-800 text-slate-500' : 'bg-rose-500/15 text-rose-600'}`;
+
+            document.getElementById('eval-correct-ans-badge').innerText = `Doğru Cevap: ${q.correct}`;
+
+            // Soru Gövdesi
+            let html = `<div class="space-y-6 text-left animate-fade-in">`;
+            if (q.image) {
+                html += `
+                    <div class="relative group inline-block max-w-full">
+                        <div class="bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-3xl shadow-lg border border-slate-200 dark:border-slate-800 inline-block">
+                            <img src="${q.image}" onclick="openLightbox('${q.image}')" class="max-h-[380px] w-auto max-w-full object-contain rounded-xl cursor-zoom-in group-hover:scale-[1.01] transition-transform">
+                        </div>
+                        <span class="text-[9px] font-bold text-slate-400 block mt-1.5">🔍 Büyütmek için görsele tıklayın</span>
+                    </div>`;
+            }
+            if (q.text) {
+                html += `<div class="font-semibold text-slate-800 dark:text-slate-100 whitespace-pre-wrap leading-relaxed text-sm">${q.text}</div>`;
+            }
+            html += `</div>`;
+            document.getElementById('eval-q-container').innerHTML = html;
+
+            // Şıklar (Öğrencinin seçtiği ve doğru olan belirgin)
+            const choices = ['A', 'B', 'C', 'D', 'E'];
+            document.getElementById('eval-q-choices-container').innerHTML = choices.map(o => {
+                const isStd = sAns === o;
+                const isCorr = q.correct === o;
+
+                let cls = 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200';
+                let tag = '';
+
+                if(isCorr) {
+                    cls = 'border-emerald-500 bg-emerald-500/15 text-emerald-600 ring-2 ring-emerald-500/40 font-black';
+                    tag = '<span class="text-[8px] uppercase block font-bold text-emerald-600">✓ Doğru</span>';
+                }
+                if(isStd && !isCorr) {
+                    cls = 'border-rose-500 bg-rose-500/15 text-rose-600 ring-2 ring-rose-500/40 font-black';
+                    tag = '<span class="text-[8px] uppercase block font-bold text-rose-600">✕ Öğrenci</span>';
+                } else if(isStd && isCorr) {
+                    tag = '<span class="text-[8px] uppercase block font-bold text-emerald-600">✓ Öğrenci</span>';
+                }
+
+                return `
+                    <div class="flex flex-col items-center gap-1">
+                        <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl border-2 font-mono text-lg sm:text-xl flex items-center justify-center shadow-sm ${cls}">
+                            ${o}
+                        </div>
+                        ${tag}
+                    </div>`;
+            }).join('');
+
+            // Önceki Çizimleri Yeniden Çiz
+            redrawEvalStrokes();
+
+            // Navigasyon
+            document.getElementById('eval-btn-prev').disabled = evalQIdx === 0;
+            document.getElementById('eval-btn-next').disabled = evalQIdx === curExam.questions.length - 1;
+        }
+
+        window.jumpEvalQ = (idx) => {
+            evalQIdx = idx;
+            renderEvalQuestion();
+            soundClick();
+        };
+
+        window.navEvalQ = (d) => {
+            const n = evalQIdx + d;
+            if(n >= 0 && n < curExam.questions.length) {
+                evalQIdx = n;
+                renderEvalQuestion();
+                soundClick();
+            }
+        };
+
+        // --- ÖĞRETMEN DEĞERLENDİRME ÇİZİM / ANLATIM MOTORU ---
+        function setupEvalWhiteboard() {
+            evalCanvas = document.getElementById('eval-whiteboard-canvas'); if(!evalCanvas) return;
+            evalCtx = evalCanvas.getContext('2d');
+            const container = document.getElementById('eval-q-card');
+            evalCanvas.width = container.offsetWidth; evalCanvas.height = container.offsetHeight;
+            evalCtx.lineJoin = 'round'; evalCtx.lineCap = 'round';
+            updateEvalContextStyle();
+
+            const getPos = (e) => {
+                const rect = evalCanvas.getBoundingClientRect();
+                return {
+                    x: (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left,
+                    y: (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top
+                };
+            };
+
+            const startDraw = (e) => {
+                if(!evalWbActive) return;
+                evalDrawing = true; evalCurrentStroke = [];
+                const pos = getPos(e);
+                evalCurrentStroke.push(pos);
+                evalCtx.beginPath(); evalCtx.moveTo(pos.x, pos.y);
+            };
+
+            const draw = (e) => {
+                if(!evalDrawing || !evalWbActive) return;
+                e.preventDefault();
+                const pos = getPos(e);
+                evalCurrentStroke.push(pos);
+                updateEvalContextStyle();
+                evalCtx.lineTo(pos.x, pos.y); evalCtx.stroke();
+            };
+
+            const stopDraw = () => {
+                if(!evalDrawing) return;
+                evalDrawing = false; evalCtx.closePath();
+                if(evalCurrentStroke.length > 0) {
+                    if(!evalQuestionStrokes[evalQIdx]) evalQuestionStrokes[evalQIdx] = [];
+                    evalQuestionStrokes[evalQIdx].push({ tool: evalTool, color: evalPenColor, size: evalBrushSize, points: evalCurrentStroke });
+                }
+            };
+
+            evalCanvas.addEventListener('mousedown', startDraw);
+            evalCanvas.addEventListener('mousemove', draw);
+            evalCanvas.addEventListener('mouseup', stopDraw);
+            evalCanvas.addEventListener('mouseleave', stopDraw);
+            evalCanvas.addEventListener('touchstart', startDraw, { passive: false });
+            evalCanvas.addEventListener('touchmove', draw, { passive: false });
+            evalCanvas.addEventListener('touchend', stopDraw);
+        }
+
+        function updateEvalContextStyle() {
+            if(!evalCtx) return;
+            const isDark = document.documentElement.classList.contains('dark');
+            if (evalTool === 'eraser') {
+                evalCtx.globalCompositeOperation = 'destination-out';
+                evalCtx.lineWidth = 32;
+            } else if (evalTool === 'highlighter') {
+                evalCtx.globalCompositeOperation = 'source-over';
+                evalCtx.strokeStyle = 'rgba(250, 204, 21, 0.4)';
+                evalCtx.lineWidth = 20;
+            } else {
+                evalCtx.globalCompositeOperation = 'source-over';
+                evalCtx.strokeStyle = (isDark && evalPenColor === '#000000') ? '#ffffff' : evalPenColor;
+                evalCtx.lineWidth = evalBrushSize;
+            }
+        }
+
+        window.toggleEvalWhiteboard = () => {
+            evalWbActive = !evalWbActive;
+            const btn = document.getElementById('btn-eval-wb-toggle');
+            const panel = document.getElementById('eval-wb-tools-panel');
+            const container = document.getElementById('eval-canvas-container');
+            
+            container.classList.toggle('active', evalWbActive);
+            container.className = `canvas-container ${evalWbActive ? 'active cursor-pen' : ''}`;
+            
+            document.getElementById('eval-wb-btn-label').innerText = evalWbActive ? "Çözüm Çizimini Kapat" : "Çözüm Çizimini Aç";
+            btn.classList.toggle('bg-amber-600', evalWbActive);
+            btn.classList.toggle('bg-brand-600', !evalWbActive);
+            panel.classList.toggle('hidden', !evalWbActive);
+            soundClick();
+        };
+
+        window.setEvalTool = (t) => {
+            evalTool = t;
+            document.querySelectorAll('.eval-tool-btn').forEach(b => {
+                b.classList.remove('bg-brand-600', 'text-white');
+                b.classList.add('text-slate-500');
+            });
+            const active = document.getElementById(`eval-tool-${t}`);
+            if(active) { active.classList.add('bg-brand-600', 'text-white'); active.classList.remove('text-slate-500'); }
+            
+            const container = document.getElementById('eval-canvas-container');
+            container.className = `canvas-container active cursor-${t === 'eraser' ? 'eraser' : 'pen'}`;
+            soundClick();
+        };
+
+        window.setEvalPenColor = (c) => {
+            evalPenColor = c; evalTool = 'pen'; setEvalTool('pen'); updateEvalContextStyle();
+        };
+
+        window.undoEvalStroke = () => {
+            if(!evalQuestionStrokes[evalQIdx] || evalQuestionStrokes[evalQIdx].length === 0) return;
+            evalQuestionStrokes[evalQIdx].pop();
+            redrawEvalStrokes();
+        };
+
+        function redrawEvalStrokes() {
+            if(!evalCtx || !evalCanvas) return;
+            evalCtx.clearRect(0, 0, evalCanvas.width, evalCanvas.height);
+            const strokes = evalQuestionStrokes[evalQIdx] || [];
+            strokes.forEach(s => {
+                evalCtx.beginPath();
+                const isDark = document.documentElement.classList.contains('dark');
+                if(s.tool === 'eraser') { evalCtx.globalCompositeOperation = 'destination-out'; evalCtx.lineWidth = 32; }
+                else if(s.tool === 'highlighter') { evalCtx.globalCompositeOperation = 'source-over'; evalCtx.strokeStyle = 'rgba(250, 204, 21, 0.4)'; evalCtx.lineWidth = 20; }
+                else { evalCtx.globalCompositeOperation = 'source-over'; evalCtx.strokeStyle = (isDark && s.color === '#000000') ? '#ffffff' : s.color; evalCtx.lineWidth = s.size; }
+                
+                s.points.forEach((p, idx) => {
+                    if(idx === 0) evalCtx.moveTo(p.x, p.y); else evalCtx.lineTo(p.x, p.y);
+                });
+                evalCtx.stroke(); evalCtx.closePath();
+            });
+        }
+
+        window.clearEvalCanvas = (perm = false) => {
+            if(!evalCtx) return;
+            evalCtx.clearRect(0, 0, evalCanvas.width, evalCanvas.height);
+            if(perm) { delete evalQuestionStrokes[evalQIdx]; }
+            soundClick();
+        };
+
+        window.viewDetails = (id) => {
+            openTeacherEval(id);
         };
 
         window.closeModal = () => document.getElementById('details-modal').classList.replace('flex', 'hidden');
