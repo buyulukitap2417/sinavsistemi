@@ -1,277 +1,694 @@
- (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
-diff --git a/index.html b/index.html
-index 434e795f42d123d9245c229c6e7a87a70630abc7..5b94c1fbceeff6bb272ceb1b9b43535126885418 100644
---- a/index.html
-+++ b/index.html
-@@ -1,127 +1,150 @@
- <!DOCTYPE html>
- <html lang="tr">
- <head>
--    <meta charset="UTF-8">
--    <meta name="viewport" content="width=device-width, initial-scale=1.0">
--    <title>MATOTA | Kısa Bir Mola</title>
--    <!-- Tailwind CSS (Hızlı ve modern tasarım için) -->
--    <script src="https://cdn.tailwindcss.com"></script>
--    <style>
--        /* Arka plan için özel animasyonlar */
--        @keyframes blob {
--            0% { transform: translate(0px, 0px) scale(1); }
--            33% { transform: translate(30px, -50px) scale(1.1); }
--            66% { transform: translate(-20px, 20px) scale(0.9); }
--            100% { transform: translate(0px, 0px) scale(1); }
--        }
--        
--        .animate-blob {
--            animation: blob 7s infinite alternate;
--        }
--        
--        .animation-delay-2000 {
--            animation-delay: 2s;
--        }
--        
--        .animation-delay-4000 {
--            animation-delay: 4s;
--        }
--
--        /* Cam karta hafif bir süzülme efekti */
--        @keyframes float {
--            0% { transform: translateY(0px); }
--            50% { transform: translateY(-10px); }
--            100% { transform: translateY(0px); }
--        }
--
--        .animate-float {
--            animation: float 6s ease-in-out infinite;
--        }
--
--        /* Çark dönüş animasyonu */
--        @keyframes spin-slow {
--            from { transform: rotate(0deg); }
--            to { transform: rotate(360deg); }
--        }
--        
--        .animate-spin-slow {
--            animation: spin-slow 8s linear infinite;
--        }
--        .animate-spin-slow-reverse {
--            animation: spin-slow 10s linear infinite reverse;
--        }
--    </style>
-+  <meta charset="UTF-8" />
-+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-+  <title>MATOTA | Online Eğitim Platformu</title>
-+  <script src="https://cdn.tailwindcss.com"></script>
- </head>
--<body class="bg-slate-950 font-sans text-slate-100 overflow-hidden selection:bg-indigo-500 selection:text-white">
--
--    <!-- Animasyonlu Arka Plan Şekilleri -->
--    <div class="fixed inset-0 w-full h-full z-0 flex items-center justify-center pointer-events-none">
--        <div class="absolute top-0 -left-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
--        <div class="absolute top-0 -right-4 w-72 h-72 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
--        <div class="absolute -bottom-8 left-20 w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
-+<body class="bg-slate-100 text-slate-800 min-h-screen">
-+  <header class="bg-slate-900 text-white px-6 py-4 shadow">
-+    <div class="max-w-7xl mx-auto flex items-center justify-between">
-+      <h1 class="text-xl md:text-2xl font-bold tracking-wide">MATOTA Online Eğitim</h1>
-+      <span id="dbStatus" class="text-xs px-2 py-1 rounded bg-amber-500/20 text-amber-200">DB bağlanıyor...</span>
-     </div>
-+  </header>
- 
--    <!-- Ana İçerik Konteyneri -->
--    <div class="relative z-10 min-h-screen flex flex-col items-center justify-center p-4">
--        
--        <!-- Glassmorphism Kartı -->
--        <div class="relative w-full max-w-2xl bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 sm:p-14 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] animate-float flex flex-col items-center text-center">
--            
--            <!-- Logo / Marka -->
--            <div class="mb-8">
--                <h1 class="text-4xl sm:text-5xl font-extrabold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">
--                    MATOTA
--                </h1>
--                <div class="h-1 w-1/2 mx-auto bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full mt-2 opacity-50"></div>
--            </div>
--
--            <!-- İkonlar (Animasyonlu Çarklar) -->
--            <div class="relative w-24 h-24 mb-8 flex items-center justify-center">
--                <!-- Büyük Çark -->
--                <svg class="absolute w-16 h-16 text-indigo-400 animate-spin-slow opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
--                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
--                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
--                </svg>
--                <!-- Küçük Çark -->
--                <svg class="absolute w-10 h-10 text-cyan-400 animate-spin-slow-reverse transform translate-x-6 -translate-y-6 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
--                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
--                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
--                </svg>
--            </div>
--
--            <!-- Başlık ve Açıklama -->
--            <h2 class="text-2xl sm:text-3xl font-bold mb-4 text-white">
--                Şu Anda Bakımdayız
--            </h2>
--            <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-8 max-w-md">
--                Sizlere daha muazzam ve kesintisiz bir deneyim sunmak için sistemlerimizi güncelliyoruz. Çok yakında daha güçlü bir şekilde geri döneceğiz. Sabrınız için teşekkür ederiz.
--            </p>
--
--            <!-- Durum Bildirgesi -->
--            <div class="flex items-center space-x-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full backdrop-blur-md mb-8">
--                <span class="relative flex h-3 w-3">
--                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
--                  <span class="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
--                </span>
--                <span class="text-sm font-medium text-amber-200/90 tracking-wide uppercase">Sistem Güncelleniyor</span>
--            </div>
--
--            <!-- İletişim Butonu -->
--            <a href="mailto:iletisim@matota.com" class="group relative px-6 py-3 font-semibold text-white rounded-xl overflow-hidden bg-white/10 border border-white/20 hover:bg-white/20 transition-all duration-300">
--                <span class="relative z-10 flex items-center gap-2">
--                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
--                    Bize Ulaşın
--                </span>
--                <div class="absolute inset-0 h-full w-0 bg-gradient-to-r from-cyan-500 to-purple-500 transition-all duration-300 ease-out group-hover:w-full z-0 opacity-50"></div>
--            </a>
--            
--        </div>
--
--        <!-- Alt Bilgi (Footer) -->
--        <p class="mt-8 text-slate-500 text-sm z-10">
--            &copy; <script>document.write(new Date().getFullYear())</script> MATOTA. Tüm hakları saklıdır.
--        </p>
--    </div>
-+  <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
-+    <section class="rounded-xl border bg-white p-4">
-+      <p class="text-sm text-slate-600">Panel Seçimi</p>
-+      <div class="mt-3 flex gap-3">
-+        <button id="studentTab" class="px-4 py-2 rounded-lg bg-indigo-600 text-white">Öğrenci Paneli</button>
-+        <button id="teacherTab" class="px-4 py-2 rounded-lg bg-slate-200 text-slate-700">Öğretmen Paneli</button>
-+      </div>
-+    </section>
-+
-+    <section id="studentPanel" class="space-y-5">
-+      <h2 class="text-2xl font-bold">Öğrenci Paneli</h2>
-+      <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
-+        <div class="bg-white p-4 rounded-xl shadow-sm border"><h3 class="font-semibold">DASHBOARD</h3><p id="studentDashboard" class="text-sm text-slate-600 mt-2">Yükleniyor...</p></div>
-+        <div class="bg-white p-4 rounded-xl shadow-sm border"><h3 class="font-semibold">DERSLERİM</h3><ul id="studentLessons" class="text-sm text-slate-600 mt-2 list-disc list-inside"></ul></div>
-+        <div class="bg-white p-4 rounded-xl shadow-sm border"><h3 class="font-semibold">SINAVLARIM</h3><ul id="studentExams" class="text-sm text-slate-600 mt-2 list-disc list-inside"></ul></div>
-+        <div class="bg-white p-4 rounded-xl shadow-sm border"><h3 class="font-semibold">ÖDEVLERİM</h3><ul id="studentHomeworks" class="text-sm text-slate-600 mt-2 list-disc list-inside"></ul></div>
-+        <div class="bg-white p-4 rounded-xl shadow-sm border"><h3 class="font-semibold">DOSYALARIM</h3><ul id="studentFiles" class="text-sm text-slate-600 mt-2 list-disc list-inside"></ul></div>
-+        <div class="bg-white p-4 rounded-xl shadow-sm border md:col-span-2"><h3 class="font-semibold">KISA VİDEOLAR</h3><ul id="studentVideos" class="text-sm text-slate-600 mt-2 list-disc list-inside"></ul></div>
-+        <div class="bg-white p-4 rounded-xl shadow-sm border"><h3 class="font-semibold">ANALİZLERİM</h3><ul id="studentAnalyses" class="text-sm text-slate-600 mt-2 list-disc list-inside"></ul></div>
-+        <div class="bg-white p-4 rounded-xl shadow-sm border"><h3 class="font-semibold">MATEMATİK OYUNLARI</h3><ul id="studentGames" class="text-sm text-slate-600 mt-2 list-disc list-inside"></ul></div>
-+      </div>
-+    </section>
-+
-+    <section id="teacherPanel" class="space-y-5 hidden">
-+      <h2 class="text-2xl font-bold">Öğretmen Paneli</h2>
-+      <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
-+        <div class="bg-white p-4 rounded-xl shadow-sm border"><h3 class="font-semibold">DASHBOARD</h3><p id="teacherDashboard" class="text-sm text-slate-600 mt-2">Yükleniyor...</p></div>
-+        <div class="bg-white p-4 rounded-xl shadow-sm border"><h3 class="font-semibold">ÖĞRENCİ TAKİBİ</h3><ul id="teacherTracking" class="text-sm text-slate-600 mt-2 list-disc list-inside"></ul></div>
-+        <div class="bg-white p-4 rounded-xl shadow-sm border"><h3 class="font-semibold">ÖĞRENCİ KAYIT</h3><p class="text-sm text-slate-600 mt-2">Supabase profiles tablosu ile kayıt yapılacak.</p></div>
-+        <div class="bg-white p-4 rounded-xl shadow-sm border"><h3 class="font-semibold">DERS PLANLAMA</h3><ul id="teacherLessons" class="text-sm text-slate-600 mt-2 list-disc list-inside"></ul></div>
-+        <div class="bg-white p-4 rounded-xl shadow-sm border"><h3 class="font-semibold">SINAV PLANLAMA</h3><ul id="teacherExams" class="text-sm text-slate-600 mt-2 list-disc list-inside"></ul></div>
-+        <div class="bg-white p-4 rounded-xl shadow-sm border"><h3 class="font-semibold">ÖDEV YÖNETİMİ</h3><ul id="teacherHomeworks" class="text-sm text-slate-600 mt-2 list-disc list-inside"></ul></div>
-+        <div class="bg-white p-4 rounded-xl shadow-sm border"><h3 class="font-semibold">DOSYA PAYLAŞIMI</h3><ul id="teacherFiles" class="text-sm text-slate-600 mt-2 list-disc list-inside"></ul></div>
-+        <div class="bg-white p-4 rounded-xl shadow-sm border"><h3 class="font-semibold">MATEMATİK OYUNLARI</h3><ul id="teacherGames" class="text-sm text-slate-600 mt-2 list-disc list-inside"></ul></div>
-+        <div class="bg-white p-4 rounded-xl shadow-sm border"><h3 class="font-semibold">VİDEO YÖNETİMİ</h3><ul id="teacherVideos" class="text-sm text-slate-600 mt-2 list-disc list-inside"></ul></div>
-+        <div class="bg-white p-4 rounded-xl shadow-sm border"><h3 class="font-semibold">PUAN SİSTEMİ</h3><ul id="teacherPoints" class="text-sm text-slate-600 mt-2 list-disc list-inside"></ul></div>
-+        <div class="bg-white p-4 rounded-xl shadow-sm border md:col-span-2"><h3 class="font-semibold">ANALİZLERİM</h3><ul id="teacherAnalyses" class="text-sm text-slate-600 mt-2 list-disc list-inside"></ul></div>
-+        <div class="bg-white p-4 rounded-xl shadow-sm border"><h3 class="font-semibold">GELİŞİM RAPORU</h3><p class="text-sm text-slate-600 mt-2">detailed_analyses tablosundan filtreli rapor üretilecek.</p></div>
-+        <div class="bg-white p-4 rounded-xl shadow-sm border"><h3 class="font-semibold">MESAJLAR</h3><ul id="teacherMessages" class="text-sm text-slate-600 mt-2 list-disc list-inside"></ul></div>
-+      </div>
-+    </section>
-+  </main>
-+
-+  <script type="module">
-+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-+
-+    const SUPABASE_URL = 'https://tnhofdyonpbmozqzimzj.supabase.co';
-+    const SUPABASE_ANON_KEY = 'sb_publishable_xVFfpA85IjnCqIjEJWvtvQ_VZCH_n60';
-+
-+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-+
-+    const el = (id) => document.getElementById(id);
-+    const setList = (id, items, render) => {
-+      const target = el(id);
-+      target.innerHTML = '';
-+      if (!items?.length) {
-+        target.innerHTML = '<li>Veri bulunamadı</li>';
-+        return;
-+      }
-+      items.forEach((item) => {
-+        const li = document.createElement('li');
-+        li.textContent = render(item);
-+        target.appendChild(li);
-+      });
-+    };
-+
-+    function activate(tab) {
-+      const isStudent = tab === 'student';
-+      el('studentPanel').classList.toggle('hidden', !isStudent);
-+      el('teacherPanel').classList.toggle('hidden', isStudent);
-+      el('studentTab').className = `px-4 py-2 rounded-lg ${isStudent ? 'bg-indigo-600 text-white' : 'bg-slate-200 text-slate-700'}`;
-+      el('teacherTab').className = `px-4 py-2 rounded-lg ${!isStudent ? 'bg-indigo-600 text-white' : 'bg-slate-200 text-slate-700'}`;
-+    }
-+
-+    el('studentTab').addEventListener('click', () => activate('student'));
-+    el('teacherTab').addEventListener('click', () => activate('teacher'));
-+
-+    async function fetchTable(table, queryBuilder) {
-+      const q = queryBuilder(supabase.from(table));
-+      const { data, error } = await q;
-+      if (error) throw new Error(`${table}: ${error.message}`);
-+      return data || [];
-+    }
-+
-+    async function loadData() {
-+      try {
-+        const [lessons, exams, homeworks, files, videos, analyses, games, points, profiles, messages] = await Promise.all([
-+          fetchTable('lessons', (q) => q.select('*').order('created_at', { ascending: false }).limit(5)),
-+          fetchTable('exams', (q) => q.select('*').order('created_at', { ascending: false }).limit(5)),
-+          fetchTable('homeworks', (q) => q.select('*').order('created_at', { ascending: false }).limit(5)),
-+          fetchTable('course_files', (q) => q.select('*').order('created_at', { ascending: false }).limit(5)),
-+          fetchTable('videos', (q) => q.select('*').order('created_at', { ascending: false }).limit(5)),
-+          fetchTable('detailed_analyses', (q) => q.select('*').order('created_at', { ascending: false }).limit(5)),
-+          fetchTable('games', (q) => q.select('*').order('created_at', { ascending: false }).limit(5)),
-+          fetchTable('points', (q) => q.select('*').order('created_at', { ascending: false }).limit(5)),
-+          fetchTable('profiles', (q) => q.select('*').limit(5)),
-+          fetchTable('contact_messages', (q) => q.select('*').order('created_at', { ascending: false }).limit(5)),
-+        ]);
-+
-+        el('dbStatus').textContent = 'Supabase bağlı';
-+        el('dbStatus').className = 'text-xs px-2 py-1 rounded bg-emerald-500/20 text-emerald-200';
-+
-+        el('studentDashboard').textContent = `Aktif ders: ${lessons.length} | Aktif sınav: ${exams.length} | Aktif ödev: ${homeworks.length}`;
-+        el('teacherDashboard').textContent = `Öğrenci: ${profiles.length} | Son puan: ${points.length} kayıt`;
-+
-+        setList('studentLessons', lessons, (x) => x.name || x.title || 'İsimsiz ders');
-+        setList('studentExams', exams, (x) => `${x.name || 'Sınav'}${x.exam_code ? ` (Kod: ${x.exam_code})` : ''}`);
-+        setList('studentHomeworks', homeworks, (x) => x.title || 'İsimsiz ödev');
-+        setList('studentFiles', files, (x) => x.name || x.file_name || 'Dosya');
-+        setList('studentVideos', videos, (x) => x.title || x.name || 'Video');
-+        setList('studentAnalyses', analyses, (x) => x.test_name || x.title || 'Analiz');
-+        setList('studentGames', games, (x) => x.name || x.title || 'Oyun');
-+
-+        setList('teacherTracking', profiles, (x) => `${x.full_name || x.email || x.id} - Son modül: ${x.last_module || 'Yok'}`);
-+        setList('teacherLessons', lessons, (x) => `${x.name || 'Ders'} - ${x.scheduled_at || x.date || 'Tarih yok'}`);
-+        setList('teacherExams', exams, (x) => `${x.name || 'Sınav'} - Kod: ${x.exam_code || '—'}`);
-+        setList('teacherHomeworks', homeworks, (x) => `${x.title || 'Ödev'} - ${x.due_date || 'Teslim tarihi yok'}`);
-+        setList('teacherFiles', files, (x) => x.name || x.file_name || 'Dosya');
-+        setList('teacherGames', games, (x) => x.name || x.title || 'Oyun');
-+        setList('teacherVideos', videos, (x) => `${x.title || x.name || 'Video'} (${x.comment_count || 0} yorum)`);
-+        setList('teacherPoints', points, (x) => `${x.category || 'Kategori'}: ${x.value || x.point || 0}`);
-+        setList('teacherAnalyses', analyses, (x) => `${x.test_name || 'Test'} - ${x.score || 0} puan`);
-+        setList('teacherMessages', messages, (x) => x.subject || x.name || 'Mesaj');
-+      } catch (error) {
-+        el('dbStatus').textContent = 'Supabase hatası';
-+        el('dbStatus').className = 'text-xs px-2 py-1 rounded bg-rose-500/20 text-rose-200';
-+        el('studentDashboard').textContent = `Bağlantı hatası: ${error.message}`;
-+      }
-+    }
- 
-+    loadData();
-+  </script>
- </body>
- </html>
- 
-EOF
-)
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATOTA - Profesyonel Sınav Sistemi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brand: { light: '#6366f1', dark: '#4f46e5', orange: '#f97316' } },
+                    animation: { 'fade-in': 'fadeIn 0.3s ease-out', 'blink': 'blink 1.5s infinite' },
+                    keyframes: {
+                        fadeIn: { 'from': { opacity: 0, transform: 'translateY(8px)' }, 'to': { opacity: 1, transform: 'translateY(0)' } },
+                        blink: { '0%, 100%': { opacity: 1 }, '50%': { opacity: 0.4 } }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/css">
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; transition: background-color 0.3s ease; }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        .dark .glass {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.4); border-radius: 10px; }
+        
+        #whiteboard-canvas { touch-action: none; cursor: crosshair; display: block; background: transparent; }
+        .canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
+        .canvas-container.active { pointer-events: auto; }
+
+        .btn-hover { transition: all 0.2s ease-in-out; }
+        .btn-hover:hover { transform: translateY(-2px); filter: brightness(1.05); }
+        
+        .optik-item.active { border-color: #6366f1 !important; background: rgba(99, 102, 241, 0.1) !important; scale: 1.02; }
+        .optik-item.filled { background: rgba(99, 102, 241, 0.06); }
+        
+        .choice-btn.selected { 
+            background-color: #4f46e5 !important; 
+            color: white !important; 
+            border-color: #312e81 !important; 
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+            transform: scale(1.05);
+        }
+        
+        .abstract-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.1; background: radial-gradient(circle at 10% 10%, #6366f1 0%, transparent 40%), radial-gradient(circle at 90% 90%, #f97316 0%, transparent 40%); }
+        .dark .abstract-bg { opacity: 1; background: #020617; }
+
+        .loader-ring { display: inline-block; width: 60px; height: 60px; border: 5px solid #f3f4f6; border-radius: 50%; border-top: 5px solid #ea580c; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .blink-red { animation: blink 1.5s infinite; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 min-h-screen custom-scrollbar">
+
+    <div class="abstract-bg"></div>
+
+    <!-- İlerleme Barı -->
+    <div id="global-loader" class="fixed top-0 left-0 w-full h-1 z-[300] bg-orange-100/20 hidden">
+        <div id="loader-fill" class="h-full bg-brand-orange transition-all duration-300 shadow-[0_0_10px_#f97316]"></div>
+    </div>
+
+    <!-- Merkezi Yükleme -->
+    <div id="central-loader" class="fixed inset-0 bg-slate-950/40 backdrop-blur-sm z-[250] hidden flex flex-col items-center justify-center">
+        <div class="glass p-10 rounded-[40px] shadow-2xl flex flex-col items-center gap-3 border-white/20">
+            <div class="loader-ring"></div>
+            <p class="text-slate-800 dark:text-white font-bold text-sm uppercase tracking-widest text-center">İşleniyor...</p>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 glass dark:bg-slate-800 px-8 py-4 rounded-2xl shadow-xl hidden z-[400] font-bold text-xs border border-brand-light/20"></div>
+
+    <!-- Navigasyon -->
+    <nav id="main-nav" class="glass sticky top-0 mx-auto w-full z-50 border-b border-white/20">
+        <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center w-full">
+            <div class="flex items-center gap-3 cursor-pointer group" onclick="navigate('portal')">
+                <div class="bg-brand-light text-white w-9 h-9 rounded-lg flex items-center justify-center font-black text-lg shadow-md transition-transform group-hover:scale-105 text-center">M</div>
+                <h1 class="text-lg font-black tracking-tighter uppercase hidden sm:block text-slate-900 dark:text-white text-left">MATOTA</h1>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button onclick="toggleTheme()" class="p-2 rounded-xl bg-slate-100/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700 transition-colors border border-transparent hover:border-brand-light/20">
+                    <svg id="theme-icon-light" class="w-5 h-5 hidden dark:block text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"></path></svg>
+                    <svg id="theme-icon-dark" class="w-5 h-5 block dark:hidden text-brand-light" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                </button>
+                <button id="teacher-nav-btn" onclick="handleNavToPanel()" class="bg-brand-light text-white px-5 py-2 rounded-xl text-xs font-bold transition-all hover:bg-brand-dark uppercase tracking-widest shadow-md text-center">Panel</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- PORTAL -->
+    <section id="portal-section" class="view-section max-w-4xl mx-auto mt-20 px-6 text-center">
+        <div class="glass p-12 rounded-[40px] shadow-2xl border-white/30 text-center">
+            <h2 class="text-6xl font-black text-slate-900 dark:text-white mb-4 tracking-tighter uppercase text-center">MATOTA</h2>
+            <p class="text-slate-500 dark:text-slate-400 mb-10 text-lg font-medium tracking-tight text-center">Eğitimin Dijital Arka Planı</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 text-center">
+                <button onclick="navigate('student-login')" class="bg-brand-light text-white px-10 py-4 rounded-2xl font-black text-lg shadow-xl uppercase transition-transform hover:-translate-y-1 text-center">Sınava Katıl</button>
+                <button onclick="navigate('teacher-login')" class="glass dark:bg-slate-800/40 text-slate-700 dark:text-white px-8 py-4 rounded-2xl font-bold text-lg border border-slate-200 dark:border-slate-800 transition-transform hover:-translate-y-1 uppercase text-center">Yönetim</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ÖĞRETMEN GİRİŞİ -->
+    <section id="teacher-login-section" class="view-section hidden max-w-sm mx-auto mt-16 px-6 text-center">
+        <div class="glass p-10 rounded-[35px] shadow-xl text-center">
+            <h2 class="text-2xl font-black mb-8 uppercase tracking-tight text-center">Yönetici Girişi</h2>
+            <div class="space-y-4 text-left">
+                <input type="email" id="t-email" placeholder="E-Posta" class="w-full p-4 bg-white/40 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl outline-none focus:border-brand-light font-bold transition text-sm text-left">
+                <input type="password" id="t-pass" placeholder="Şifre" class="w-full p-4 bg-white/40 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl outline-none focus:border-brand-light font-bold transition text-sm text-left">
+                <button onclick="handleTeacherAuth()" class="w-full bg-brand-light text-white py-4 rounded-2xl font-black shadow-lg uppercase tracking-widest mt-2 hover:bg-brand-dark transition-all text-center">Giriş Yap</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="teacher-dashboard-section" class="view-section hidden max-w-6xl mx-auto mt-10 px-6 pb-20 text-left">
+        <div class="flex justify-between items-center mb-10 text-left">
+            <div class="text-left">
+                <h2 class="text-3xl font-black uppercase tracking-tight text-left">Sınavlarım</h2>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1 text-left">Hoş Geldiniz, Ali Bey</p>
+            </div>
+            <button onclick="logout()" class="text-red-500 font-bold text-[10px] uppercase bg-red-50 dark:bg-red-950/20 px-4 py-2 rounded-lg border border-red-100 dark:border-red-900/20 hover:bg-red-500 hover:text-white transition-all text-center">Güvenli Çıkış</button>
+        </div>
+        
+        <div class="grid lg:grid-cols-12 gap-8 text-left">
+            <div class="lg:col-span-4 text-left">
+                <div class="glass p-8 rounded-[30px] shadow-lg sticky top-24 border-white/40 text-left">
+                    <h3 class="font-black text-brand-light text-xs uppercase mb-6 tracking-widest flex items-center gap-2 text-left">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round"/></svg>
+                        Yeni Sınav
+                    </h3>
+                    <div class="space-y-4 text-left">
+                        <input type="text" id="new-exam-name" placeholder="Sınav Başlığı" class="w-full p-4 bg-white/30 dark:bg-slate-900/30 border border-transparent focus:border-brand-light rounded-2xl outline-none font-bold transition text-xs shadow-inner text-left">
+                        <input type="text" id="new-exam-code" placeholder="Kısa Kod" class="w-full p-4 bg-white/30 dark:bg-slate-900/30 border border-transparent focus:border-brand-light rounded-2xl outline-none font-bold uppercase transition text-xs shadow-inner text-left">
+                        <input type="number" id="new-exam-time" placeholder="Süre (DK)" class="w-full p-4 bg-white/30 dark:bg-slate-900/30 border border-transparent focus:border-brand-light rounded-2xl outline-none font-bold transition text-xs shadow-inner text-left">
+                        <button onclick="createNewExam()" class="w-full bg-brand-light text-white py-4 rounded-2xl font-black shadow-md uppercase text-xs hover:bg-brand-dark transition-all text-center">Kaydet</button>
+                    </div>
+                </div>
+            </div>
+            <div class="lg:col-span-8 space-y-4 text-left" id="exams-container"></div>
+        </div>
+    </section>
+
+    <!-- SINAV DÜZENLEME -->
+    <section id="manage-exam-section" class="view-section hidden max-w-6xl mx-auto mt-8 px-6 pb-32 text-left">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 text-left">
+            <div class="flex items-center gap-4 text-left">
+                <button onclick="navigate('teacher-dashboard')" class="glass bg-white dark:bg-slate-900 w-11 h-11 rounded-xl shadow-md flex items-center justify-center text-brand-light border-white/50 hover:bg-brand-light hover:text-white transition-all text-center">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <div>
+                    <h2 id="m-exam-title" class="text-2xl font-black text-slate-900 dark:text-white uppercase leading-none text-left">Düzenle</h2>
+                    <p id="m-exam-code-display" class="text-[9px] font-black text-brand-light mt-1.5 uppercase font-mono bg-brand-light/10 px-3 py-1 rounded-full w-fit text-left">KOD: ---</p>
+                </div>
+            </div>
+            <div class="flex gap-2 text-center">
+                <button onclick="openExamSettings()" class="bg-slate-800 text-white px-5 py-3 rounded-2xl font-black text-[10px] flex items-center gap-2 shadow-lg uppercase tracking-widest hover:bg-black transition-all text-center">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    Ayarlar
+                </button>
+                <button onclick="copyShareLink()" class="bg-brand-orange text-white px-5 py-3 rounded-2xl font-black text-[10px] flex items-center gap-2 shadow-lg uppercase tracking-widest hover:scale-105 transition-all text-center">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" stroke-width="2.5" stroke-linecap="round"/></svg>
+                    Link Kopyala
+                </button>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-12 gap-8 text-left">
+            <div class="lg:col-span-7 space-y-6 text-left">
+                <div class="glass p-8 rounded-[35px] shadow-xl border-white/20 h-fit text-left">
+                    <div class="flex justify-between items-center mb-6 text-left">
+                        <h3 id="q-editor-title" class="text-lg font-black text-brand-light uppercase text-left">Soru Ekle</h3>
+                        <button onclick="shuffleQuestions()" class="bg-brand-light/10 text-brand-light p-2.5 rounded-xl hover:bg-brand-light hover:text-white transition-all text-center" title="Soruları Rastgele Karıştır">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        </button>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-[25px] border border-slate-200 dark:border-slate-800 space-y-4 text-left">
+                        <textarea id="q-input" oninput="updateLivePreview()" placeholder="Soru metni..." class="w-full p-4 bg-white dark:bg-slate-800 border-2 border-transparent focus:border-brand-light rounded-2xl h-24 outline-none font-semibold transition text-sm shadow-sm text-left"></textarea>
+                        <div class="grid grid-cols-2 gap-4 text-left">
+                            <select id="q-ans" class="p-3 bg-white dark:bg-slate-800 rounded-xl font-bold text-sm outline-none border border-slate-100 dark:border-slate-700 shadow-sm text-left">
+                                <option value="A">Doğru: A</option><option value="B">Doğru: B</option>
+                                <option value="C">Doğru: C</option><option value="D">Doğru: D</option>
+                                <option value="E">Doğru: E</option>
+                            </select>
+                            <label class="p-3 bg-white dark:bg-slate-800 rounded-xl cursor-pointer flex items-center justify-center gap-2 font-bold text-[10px] text-slate-500 hover:text-brand-light transition shadow-sm border border-slate-100 dark:border-slate-700 uppercase text-left">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2" stroke-linecap="round"/></svg>
+                                <span>Resim</span>
+                                <input type="file" id="q-img-file" onchange="handleImagePreview(event)" accept="image/*" class="hidden text-left">
+                            </label>
+                        </div>
+                        <div id="live-preview" class="p-5 bg-white dark:bg-slate-800 rounded-2xl hidden shadow-md animate-in fade-in duration-300 text-left">
+                            <div id="preview-img-container" class="mb-3 text-center rounded-xl overflow-hidden text-left"></div>
+                            <p id="preview-text" class="text-xs font-bold whitespace-pre-wrap text-slate-600 dark:text-slate-400 text-left"></p>
+                        </div>
+                        <div class="flex gap-3 text-left">
+                            <button id="save-q-btn" onclick="saveQuestion()" class="flex-1 bg-brand-light text-white py-4 rounded-2xl font-black shadow-lg uppercase tracking-widest text-xs hover:bg-brand-dark transition-all text-center">Soru Kaydet</button>
+                            <button id="cancel-edit-btn" onclick="resetQuestionEditor()" class="px-6 bg-slate-100 dark:bg-slate-800 text-slate-500 rounded-2xl font-bold hidden uppercase text-[10px] text-center">İptal</button>
+                        </div>
+                    </div>
+                    <div id="q-list" class="mt-8 space-y-2.5 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar text-left"></div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-5 space-y-8 text-left">
+                <div class="glass p-8 rounded-[35px] shadow-lg border-white/20 text-left">
+                    <h3 class="text-lg font-black mb-6 text-green-600 flex items-center gap-3 uppercase text-left">Öğrenciler</h3>
+                    <div class="flex gap-2 mb-6 text-left">
+                        <input type="text" id="s-name-input" placeholder="Ad Soyad" class="flex-1 p-3.5 bg-white/40 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 focus:border-green-500 rounded-xl outline-none font-bold text-sm shadow-inner transition text-left">
+                        <button onclick="addStudent()" class="btn-hover bg-green-600 text-white px-5 rounded-xl flex items-center justify-center shadow-lg hover:bg-green-700 transition text-left">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round"/></svg>
+                        </button>
+                    </div>
+                    <div id="s-list" class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar pr-2 text-left"></div>
+                </div>
+
+                <div class="glass dark:bg-slate-900/60 p-8 rounded-[35px] shadow-xl text-white border-white/10 text-left">
+                    <h3 class="text-lg font-black mb-6 text-brand-light uppercase text-left">Gelen Yanıtlar</h3>
+                    <div id="sub-list" class="space-y-3 text-left"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AYARLAR MODALI -->
+    <div id="settings-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md z-[110] hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl flex flex-col border border-white/10 text-left">
+            <div class="p-6 border-b dark:border-slate-800 flex justify-between items-center text-left">
+                <h3 class="text-xl font-black uppercase text-brand-light text-left">Sınav Ayarları</h3>
+                <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-red-500 transition text-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="3"/></svg></button>
+            </div>
+            <div class="p-8 space-y-5 text-left">
+                <div class="space-y-1.5 text-left">
+                    <label class="text-[10px] font-black uppercase text-slate-400 text-left">Sınav Başlığı</label>
+                    <input type="text" id="edit-exam-title" class="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold transition border border-transparent focus:border-brand-light text-left">
+                </div>
+                <div class="space-y-1.5 text-left">
+                    <label class="text-[10px] font-black uppercase text-slate-400 text-left">Özel Giriş Kodu</label>
+                    <input type="text" id="edit-exam-code" class="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold uppercase transition border border-transparent focus:border-brand-light text-left">
+                </div>
+                <div class="space-y-1.5 text-left">
+                    <label class="text-[10px] font-black uppercase text-slate-400 text-left">Süre (Dakika)</label>
+                    <input type="number" id="edit-exam-duration" class="w-full p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold transition border border-transparent focus:border-brand-light text-left">
+                </div>
+                <button onclick="saveExamSettings()" class="btn-hover w-full bg-brand-light text-white py-4 rounded-2xl font-black shadow-lg uppercase text-center">Ayarları Güncelle</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ANALİZ MODALI -->
+    <div id="details-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md z-[100] hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-xl rounded-3xl shadow-2xl max-h-[85vh] flex flex-col border border-white/10 text-left">
+            <div class="p-6 border-b dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-950/50 rounded-t-3xl text-left">
+                <div class="text-left uppercase font-black tracking-tight text-slate-800 dark:text-white text-left" id="modal-student-name">Analiz</div>
+                <button onclick="closeModal()" class="bg-white dark:bg-slate-800 p-2 rounded-xl shadow-lg hover:text-red-500 transition border dark:border-slate-700 flex items-center justify-center text-center">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2.5" stroke-linecap="round"/></svg>
+                </button>
+            </div>
+            <div id="modal-answers-content" class="p-8 overflow-y-auto custom-scrollbar flex-1 space-y-4 text-left"></div>
+        </div>
+    </div>
+
+    <!-- ÖĞRENCİ GİRİŞİ -->
+    <section id="student-login-section" class="view-section hidden max-w-sm mx-auto mt-16 px-6 text-center">
+        <div class="glass p-10 rounded-[40px] shadow-2xl border-white/30 text-center">
+            <h2 class="text-3xl font-black mb-8 tracking-tighter uppercase text-center">Sınava Katıl</h2>
+            <div class="space-y-4 text-left text-center">
+                <input type="text" id="std-exam-id" placeholder="SINAV KODU" class="w-full p-4 bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl outline-none focus:border-brand-light font-bold text-center uppercase tracking-widest transition shadow-inner">
+                <input type="password" id="std-pass" placeholder="ÖZEL ŞİFRE" class="w-full p-4 bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl outline-none focus:border-brand-light font-bold text-center transition tracking-widest shadow-inner">
+                <button id="student-login-btn" onclick="studentLogin()" class="btn-hover w-full bg-brand-light text-white py-5 rounded-2xl font-black text-base shadow-lg uppercase tracking-widest mt-4 hover:scale-[1.02] transition-all text-center">Başlat</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SINAV EKRANI -->
+    <section id="exam-section" class="view-section hidden min-h-screen bg-white dark:bg-slate-950 transition-colors duration-500 text-left">
+        <header class="glass sticky top-2 mx-2 md:mx-4 rounded-2xl p-4 flex justify-between items-center z-[100] shadow-xl border-white/50 mt-2 text-left">
+            <div class="flex items-center gap-3 text-left">
+                <button onclick="exitExam()" class="bg-red-500/10 text-red-500 p-2.5 rounded-xl hover:bg-red-500 hover:text-white transition-all text-left">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-width="2.5" stroke-linecap="round"/></svg>
+                </button>
+                <div class="text-left text-left"><span id="active-title" class="font-black text-[10px] uppercase tracking-widest text-brand-light block mb-0.5 text-left">Oturum</span><span class="text-[8px] font-bold text-slate-400 uppercase text-left">MATOTA DİJİTAL</span></div>
+                <button onclick="toggleFullScreen()" class="bg-slate-100 dark:bg-slate-800 p-2.5 rounded-xl hover:bg-brand-light hover:text-white transition-all ml-1 shadow-sm flex items-center justify-center text-center">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" stroke-width="2.5" stroke-linecap="round"/></svg>
+                </button>
+            </div>
+            <div id="exam-timer-box" class="glass bg-white dark:bg-slate-900 px-6 py-2 rounded-xl font-mono font-black text-xl border border-brand-light/30 flex items-center gap-3 text-brand-light shadow-inner text-left">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2.5" stroke-linecap="round"/></svg>
+                <span id="exam-timer">00:00</span>
+            </div>
+        </header>
+        
+        <div class="max-w-7xl mx-auto px-4 py-8 grid lg:grid-cols-12 gap-8 text-left">
+            <div class="lg:col-span-8 space-y-6 text-left">
+                <div id="q-area" class="relative glass bg-white/40 dark:bg-slate-900/40 rounded-[35px] shadow-2xl border-white/50 dark:border-slate-800/50 min-h-[500px] overflow-hidden flex flex-col text-left">
+                    <div id="q-container" class="p-10 relative z-0 flex-1 text-left overflow-y-auto custom-scrollbar text-left"></div>
+                    <div id="q-inline-choices" class="p-6 glass bg-white/60 dark:bg-slate-800/60 border-t border-white/20 flex justify-center gap-4 z-[20] text-center"></div>
+                    <div id="canvas-container" class="canvas-container"><canvas id="whiteboard-canvas"></canvas></div>
+                </div>
+
+                <div class="glass p-4 rounded-[28px] shadow-xl flex flex-wrap items-center justify-between gap-4 border-white/30 text-left">
+                    <div class="flex items-center gap-3 text-left">
+                        <div class="flex gap-1.5 p-1.5 bg-slate-100 dark:bg-slate-800 rounded-xl shadow-inner text-left">
+                            <button onclick="setPenColor('#000000')" class="w-7 h-7 rounded-full border-2 border-white dark:border-slate-700 shadow-sm" style="background: #000000;"></button>
+                            <button onclick="setPenColor('#ffffff')" class="w-7 h-7 rounded-full border-2 border-slate-300 dark:border-slate-700 shadow-sm" style="background: #ffffff;"></button>
+                            <button onclick="setPenColor('#6366f1')" class="w-7 h-7 rounded-full border-2 border-white dark:border-slate-700 shadow-sm" style="background: #6366f1;"></button>
+                            <button onclick="setPenColor('#ef4444')" class="w-7 h-7 rounded-full border-2 border-white dark:border-slate-700 shadow-sm" style="background: #ef4444;"></button>
+                            <button onclick="setPenColor('#22c55e')" class="w-7 h-7 rounded-full border-2 border-white dark:border-slate-700 shadow-sm" style="background: #22c55e;"></button>
+                        </div>
+                        
+                        <div class="flex items-center gap-1.5 text-left">
+                            <button onclick="setTool('pen')" id="tool-pen" class="btn-hover bg-brand-light text-white p-2.5 rounded-xl shadow-md transition-all tool-btn flex items-center justify-center text-center">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" stroke-width="2.5" stroke-linecap="round"/></svg>
+                            </button>
+                            <button onclick="setTool('eraser')" id="tool-eraser" class="btn-hover bg-slate-100 dark:bg-slate-800 text-slate-500 p-2.5 rounded-xl border border-transparent hover:border-brand-light/20 tool-btn flex items-center justify-center text-center">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 15.5l7.5-7.5m1.414 1.414L12.414 16.914l-5 2.5 2.5-5L17.414 6.914l1.414 1.414z" stroke-width="2.5" stroke-linecap="round"/></svg>
+                            </button>
+                        </div>
+                        
+                        <select onchange="setBrushSize(this.value)" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[10px] font-black p-2.5 rounded-xl border-none outline-none shadow-inner text-center">
+                            <option value="2">İnce</option><option value="6">Orta</option><option value="18">Kalın</option>
+                        </select>
+
+                        <button onclick="clearCanvas(true)" class="btn-hover bg-red-50 dark:bg-red-950/30 text-red-500 p-2.5 rounded-xl shadow-sm hover:bg-red-500 hover:text-white transition-all flex items-center justify-center text-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-width="2.5" stroke-linecap="round"/></svg></button>
+                        <button onclick="toggleWhiteboard()" id="btn-toggle-wb" class="btn-hover text-[10px] font-black uppercase tracking-widest px-6 py-3 bg-slate-900 dark:bg-brand-light text-white rounded-xl shadow-lg text-center">Kalemi Aç</button>
+                    </div>
+                    <div class="flex gap-2 text-center">
+                        <button id="q-btn-prev" onclick="navQ(-1)" class="btn-hover bg-slate-100 dark:bg-slate-800 text-slate-400 px-6 py-2.5 rounded-xl font-black uppercase text-[10px] text-center">Geri</button>
+                        <button id="q-btn-next" onclick="navQ(1)" class="btn-hover bg-brand-light text-white px-10 py-2.5 rounded-xl font-black uppercase shadow-lg text-[10px] hover:bg-brand-dark transition-all text-center">İleri</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Optik Form -->
+            <div class="lg:col-span-4 text-left">
+                <div class="glass p-6 rounded-[35px] shadow-xl border-white/40 sticky top-24 h-fit max-h-[82vh] flex flex-col text-left">
+                    <h3 class="font-black mb-4 text-indigo-600 uppercase tracking-widest text-xs border-b dark:border-slate-800 pb-2 text-left">Soru Listesi</h3>
+                    <div id="opt-form" class="space-y-1.5 overflow-y-auto custom-scrollbar flex-1 pr-3 text-left"></div>
+                    <button id="finish-btn" onclick="finishExamPrompt()" class="btn-hover mt-6 w-full bg-slate-900 dark:bg-brand-light text-white py-4 rounded-2xl font-black shadow-xl uppercase tracking-widest text-[10px] hover:bg-brand-dark transition-all text-center">Bitir ve Gönder</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BEKLEME PANELİ -->
+    <section id="wait-section" class="view-section hidden max-w-2xl mx-auto mt-16 px-6 text-center">
+        <div class="glass p-12 rounded-[55px] shadow-2xl border-white/30 text-center relative overflow-hidden">
+            <div class="absolute -top-20 -right-20 w-60 h-60 bg-green-500/10 rounded-full blur-3xl"></div>
+            <div class="relative z-10 text-center">
+                <div class="w-32 h-32 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-10 shadow-lg border-4 border-green-500/20 text-center">
+                    <svg class="w-16 h-16 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <h2 class="text-4xl font-black text-slate-800 dark:text-white mb-6 uppercase tracking-tight text-center">Yanıtlar İletildi</h2>
+                <p class="text-xl text-indigo-500 dark:text-indigo-400 font-bold italic mb-10 tracking-tight text-center">"Sonuçlar öğretmeniniz tarafından onaylandığında burada belirecektir."</p>
+                
+                <div class="bg-red-500/10 border-2 border-red-500/20 p-8 rounded-[40px] flex items-center gap-6 text-left blink-red">
+                    <div class="bg-red-500 text-white p-4 rounded-3xl shadow-xl">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    </div>
+                    <div>
+                        <h4 class="text-red-600 font-black uppercase text-base tracking-widest text-left">KRİTİK UYARI</h4>
+                        <p class="text-slate-600 dark:text-slate-300 text-sm font-extrabold leading-relaxed text-left">LÜTFEN BU SEKMEYİ KAPATMAYIN VE SAYFAYI YENİLEMEYİN. <br>Aksi halde sonucu göremezsiniz.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SONUÇ -->
+    <section id="result-section" class="view-section hidden max-w-2xl mx-auto mt-12 px-6 pb-20 text-center">
+        <div class="glass p-10 rounded-[40px] shadow-2xl relative overflow-hidden border-white/30 text-left">
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-brand-light to-green-500"></div>
+            <h2 class="text-3xl font-black text-center mb-10 uppercase text-brand-light tracking-tighter text-center">Sınav Analiz Raporu</h2>
+            <div id="res-content" class="space-y-3 text-left"></div>
+            <button onclick="location.reload()" class="btn-hover w-full mt-10 bg-slate-900 dark:bg-brand-light text-white py-5 rounded-2xl font-black shadow-xl uppercase tracking-widest text-sm text-center">ANA SAYFA</button>
+        </div>
+    </section>
+
+    <script>
+        const SB_URL = 'https://uuolgqipaltotaxutfgw.supabase.co';
+        const SB_KEY = 'sb_publishable_WuSvqXpwM0z_u3Mek0zMLw_FT94Hh5G'; 
+        let _sb;
+
+        let exams = [], curExam = null, curStudentSession = null, stdAnswers = {}, curQIdx = 0, timerInt = null, tempImg = null;
+        let isEditMode = false, editingQIdx = -1, isTeacherMode = false, questionDrawings = {}; 
+        let penColor = '#000000', brushSize = 2;
+
+        function setCentralLoader(v) { document.getElementById('central-loader').classList.toggle('hidden', !v); }
+
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('matota_theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+            if(ctx) {
+                const isDark = document.documentElement.classList.contains('dark');
+                ctx.strokeStyle = (isDark && penColor === '#000000') ? '#ffffff' : penColor;
+            }
+        }
+        function loadTheme() { if (localStorage.getItem('matota_theme') === 'dark' || (!localStorage.getItem('matota_theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark'); }
+
+        // --- TAHTA ---
+        let canvas, ctx, drawing = false, tool = 'pen', wbActive = false;
+        function setupWhiteboard() {
+            canvas = document.getElementById('whiteboard-canvas'); if(!canvas) return; ctx = canvas.getContext('2d');
+            const container = document.getElementById('q-area'); canvas.width = container.offsetWidth; canvas.height = container.offsetHeight;
+            ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.lineWidth = brushSize; 
+            const isDark = document.documentElement.classList.contains('dark');
+            ctx.strokeStyle = (isDark && penColor === '#000000') ? '#ffffff' : penColor;
+            
+            const getPos = (e) => { const rect = canvas.getBoundingClientRect(); return { x: (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left, y: (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top }; };
+            const startDraw = (e) => { if(!wbActive) return; drawing = true; const pos = getPos(e); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); };
+            const draw = (e) => { 
+                if(!drawing || !wbActive) return; e.preventDefault(); const pos = getPos(e); 
+                ctx.globalCompositeOperation = tool === 'eraser' ? 'destination-out' : 'source-over'; 
+                const d = document.documentElement.classList.contains('dark');
+                ctx.strokeStyle = tool === 'eraser' ? 'rgba(0,0,0,1)' : (d && penColor === '#000000' ? '#ffffff' : penColor); 
+                ctx.lineWidth = tool === 'eraser' ? 40 : brushSize; 
+                ctx.lineTo(pos.x, pos.y); ctx.stroke(); 
+            };
+            const stopDraw = () => { drawing = false; ctx.closePath(); };
+            canvas.addEventListener('mousedown', startDraw); canvas.addEventListener('mousemove', draw); canvas.addEventListener('mouseup', stopDraw);
+            canvas.addEventListener('touchstart', startDraw); canvas.addEventListener('touchmove', draw); canvas.addEventListener('touchend', stopDraw);
+        }
+
+        window.toggleWhiteboard = () => { wbActive = !wbActive; const btn = document.getElementById('btn-toggle-wb'); document.getElementById('canvas-container').classList.toggle('active', wbActive); btn.innerText = wbActive ? "Kalemi Kapat" : "Kalemi Aç"; btn.classList.toggle('bg-orange-600', wbActive); btn.classList.toggle('bg-slate-900', !wbActive); btn.classList.toggle('dark:bg-slate-700', !wbActive); };
+        window.setTool = (t) => { tool = t; document.querySelectorAll('.tool-btn').forEach(b => { b.classList.remove('bg-brand-light', 'text-white'); b.classList.add('bg-slate-100', 'dark:bg-slate-800', 'text-slate-500'); }); const active = document.getElementById(`tool-${t}`); active.classList.replace('bg-slate-100', 'bg-brand-light'); active.classList.replace('text-slate-500', 'text-white'); };
+        
+        window.setPenColor = (c) => { 
+            penColor = c; tool = 'pen'; setTool('pen'); 
+            if(ctx) {
+                ctx.globalCompositeOperation = 'source-over';
+                const d = document.documentElement.classList.contains('dark');
+                ctx.strokeStyle = (d && c === '#000000') ? '#ffffff' : c;
+            }
+        };
+        window.setBrushSize = (s) => { brushSize = parseInt(s); if(ctx) ctx.lineWidth = brushSize; };
+        window.clearCanvas = (perm = false) => { if(!ctx) return; ctx.clearRect(0, 0, canvas.width, canvas.height); if(perm) delete questionDrawings[curQIdx]; };
+        window.toggleFullScreen = () => { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else if (document.exitFullscreen) document.exitFullscreen(); };
+
+        // --- INIT ---
+        function init() {
+            loadTheme();
+            if (window.supabase) {
+                _sb = window.supabase.createClient(SB_URL, SB_KEY);
+                const session = JSON.parse(localStorage.getItem('matota_auth') || '{}');
+                const eid = new URLSearchParams(window.location.search).get('exam');
+                if (eid) { document.getElementById('main-nav').style.display = 'none'; navigate('student-login'); document.getElementById('std-exam-id').value = decodeURIComponent(eid).trim().toUpperCase(); }
+                else if (session.isTeacher) { document.getElementById('teacher-nav-btn').innerText = "Yönetim Paneli"; navigate('teacher-dashboard'); }
+                else navigate('portal');
+            } else setTimeout(init, 100);
+        }
+
+        window.navigate = function(view) {
+            document.querySelectorAll('.view-section').forEach(s => s.classList.add('hidden'));
+            const target = document.getElementById(`${view}-section`); if (target) target.classList.remove('hidden');
+            window.location.hash = view;
+            const mainNav = document.getElementById('main-nav');
+            const examParam = new URLSearchParams(window.location.search).get('exam');
+            if (view === 'exam' || examParam) mainNav.style.display = 'none'; else mainNav.style.display = 'flex';
+            if (view === 'teacher-dashboard') fetchAllExams();
+            if (view === 'exam') { curQIdx = 0; setTimeout(() => { setupWhiteboard(); renderExamQuestion(); renderOpticalForm(); }, 300); }
+            window.scrollTo(0,0);
+        };
+
+        window.handleNavToPanel = () => { const s = JSON.parse(localStorage.getItem('matota_auth') || '{}'); if (s.isTeacher) navigate('teacher-dashboard'); else navigate('teacher-login'); };
+        window.handleTeacherAuth = function() { if (document.getElementById('t-email').value === 'alisengulidu@gmail.com' && document.getElementById('t-pass').value === '352477Ali') { localStorage.setItem('matota_auth', JSON.stringify({ isTeacher: true })); navigate('teacher-dashboard'); } else showToast("Hatalı!"); };
+        window.logout = () => { localStorage.clear(); location.href = location.pathname; };
+
+        // --- TEACHER ACTIONS ---
+        function setProgress(p) { const f = document.getElementById('loader-fill'), b = document.getElementById('global-loader'); if (p >= 100) { f.style.width = '100%'; setTimeout(() => b.classList.add('hidden'), 800); } else { b.classList.remove('hidden'); f.style.width = p + '%'; } }
+        async function fetchAllExams() { const { data, error } = await _sb.from('exams').select('*').order('created_at', { ascending: false }); if (!error) { exams = data || []; renderExamsList(); } }
+        function renderExamsList() {
+            document.getElementById('exams-container').innerHTML = exams.map(ex => `
+                <div class="glass p-5 rounded-[22px] flex flex-col sm:flex-row justify-between items-center transition-all hover:shadow-lg border-white/30 gap-4 text-left">
+                    <div class="text-left flex-1 text-left"><h4 class="font-black text-lg uppercase text-slate-800 dark:text-white text-left">${ex.title}</h4>
+                    <div class="flex gap-2 mt-1.5 text-left"><span class="text-[8px] font-black uppercase text-brand-light bg-brand-light/10 px-2 py-0.5 rounded-md text-center text-left">#${ex.code || ex.id.substring(0,8)}</span>
+                    <span class="text-[8px] font-black uppercase text-slate-400 text-center text-left">${ex.questions?.length || 0} SORU</span></div></div>
+                    <div class="flex gap-2 w-full sm:w-auto text-left text-left text-left">
+                        <button onclick="solveAsTeacher('${ex.id}')" class="flex-1 sm:flex-none bg-orange-100 dark:bg-orange-900/30 text-orange-600 px-5 py-2 rounded-xl font-black text-[9px] uppercase hover:bg-orange-600 hover:text-white transition-all text-center text-left">Çöz</button>
+                        <button onclick="openExamManager('${ex.id}')" class="flex-1 sm:flex-none bg-brand-light text-white px-7 py-2 rounded-xl font-black text-[9px] uppercase shadow-lg hover:bg-brand-dark transition-all text-center text-left text-left">Yönet</button>
+                    </div>
+                </div>`).join('');
+        }
+
+        window.createNewExam = async function() { const t = document.getElementById('new-exam-name').value, c = document.getElementById('new-exam-code').value.trim().toUpperCase(), d = document.getElementById('new-exam-time').value; if (!t || !c || !d) return; setProgress(50); const { error } = await _sb.from('exams').insert([{ title: t, code: c, duration: parseInt(d), questions: [] }]); setProgress(100); if (!error) fetchAllExams(); };
+        window.openExamManager = (id) => { curExam = exams.find(e => e.id === id); document.getElementById('m-exam-title').innerText = curExam.title; document.getElementById('m-exam-code-display').innerText = "KOD: " + (curExam.code || curExam.id.substring(0,8)); navigate('manage-exam'); renderQuestionsInManager(); fetchStudentsAndSubs(); };
+        window.copyShareLink = () => { const c = curExam.code || curExam.id; navigator.clipboard.writeText(window.location.origin + window.location.pathname + '?exam=' + encodeURIComponent(c)); showToast("Link kopyalandı!"); };
+
+        // --- QUESTION MGMT ---
+        window.handleImagePreview = (e) => { const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = (ev) => { tempImg = ev.target.result; updateLivePreview(); }; r.readAsDataURL(f); };
+        window.updateLivePreview = () => { const t = document.getElementById('q-input').value, p = document.getElementById('live-preview'); if(t || tempImg) { p.classList.remove('hidden'); document.getElementById('preview-text').innerText = t; document.getElementById('preview-img-container').innerHTML = tempImg ? `<img src="${tempImg}" class="max-h-32 rounded-lg mx-auto border shadow-sm text-left text-left">` : ''; } else p.classList.add('hidden'); };
+        window.saveQuestion = async () => {
+            const t = document.getElementById('q-input').value, a = document.getElementById('q-ans').value; if(!t && !tempImg) return;
+            setProgress(30); let updated = [...(curExam.questions || [])];
+            if(isEditMode) updated[editingQIdx] = { text: t, correct: a, image: tempImg }; else updated.push({ text: t, correct: a, image: tempImg });
+            await _sb.from('exams').update({ questions: updated }).eq('id', curExam.id);
+            curExam.questions = updated; setProgress(100); resetQuestionEditor(); renderQuestionsInManager();
+        };
+        window.editQuestion = (idx) => { isEditMode = true; editingQIdx = idx; const q = curExam.questions[idx]; document.getElementById('q-input').value = q.text || ""; document.getElementById('q-ans').value = q.correct; tempImg = q.image; updateLivePreview(); document.getElementById('q-editor-title').innerText = "Düzenleme"; document.getElementById('save-q-btn').innerText = "Güncelle"; document.getElementById('cancel-edit-btn').classList.remove('hidden'); };
+        window.resetQuestionEditor = () => { isEditMode = false; tempImg = null; document.getElementById('q-input').value = ''; document.getElementById('q-editor-title').innerText = "Soru Ekle"; document.getElementById('save-q-btn').innerText = "Soru Kaydet"; document.getElementById('cancel-edit-btn').classList.add('hidden'); updateLivePreview(); };
+        function renderQuestionsInManager() { document.getElementById('q-list').innerHTML = (curExam.questions || []).map((q, i) => `<div class="glass p-4 rounded-2xl border flex justify-between items-center text-left text-left text-left text-left"><div class="overflow-hidden flex-1 text-left text-left text-left"><span class="text-[8px] font-black text-brand-light block uppercase text-left text-left text-left">#${i+1}</span><p class="text-[10px] font-bold truncate text-left text-left text-left">${q.text || "Görsel Soru"}</p></div><div class="flex gap-2 text-left text-left text-left"><button onclick="editQuestion(${i})" class="text-brand-light p-2 text-left text-left text-left"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2.5"/></svg></button><button onclick="deleteQuestion(${i})" class="text-red-500 p-2 text-left text-left text-left text-left"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7" stroke-width="2.5"/></svg></button></div></div>`).join(''); }
+        window.deleteQuestion = async (idx) => { if(confirm("Silinsin mi?")) { curExam.questions.splice(idx, 1); await _sb.from('exams').update({ questions: curExam.questions }).eq('id', curExam.id); renderQuestionsInManager(); } };
+
+        async function fetchStudentsAndSubs() {
+            const { data: stds } = await _sb.from('students').select('*').eq('exam_id', curExam.id), { data: subs } = await _sb.from('submissions').select('*').eq('exam_id', curExam.id);
+            document.getElementById('s-list').innerHTML = (stds || []).map(s => `<div class="glass p-3 rounded-xl border flex justify-between items-center text-left text-left text-left text-left text-left"><div class="flex flex-col text-left text-left text-left text-left text-left"><span class="font-black text-[11px] uppercase text-left text-left text-left text-left text-left">${s.name}</span><span class="font-mono text-[8px] text-brand-light font-bold text-left text-left text-left text-left text-left">PW: ${s.password}</span></div><button onclick="deleteStudent('${s.id}')" class="text-red-400 p-1.5 text-left text-left text-left text-left text-left"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 7a4 4 0 11-8 0 4 4 0 018 0zM9 14a6 6 0 00-6 6v1h12v-1a6 6 0 00-6-6zM21 12h-6" stroke-width="2.5"/></svg></button></div>`).join('');
+            document.getElementById('sub-list').innerHTML = (subs || []).map(sub => `<div class="glass dark:bg-slate-800/60 p-4 rounded-2xl flex justify-between items-center border-white/5 text-left text-left text-left text-left text-left"><div class="cursor-pointer flex-1 text-left text-left text-left text-left text-left text-left" onclick="viewDetails('${sub.id}')"><p class="font-black text-sm uppercase text-left text-left text-left text-left text-left">${sub.student_name}</p><p class="text-[8px] opacity-50 font-bold uppercase text-indigo-300 text-left text-left text-left text-left text-left text-left">İncele</p></div><div class="flex gap-2 text-left text-left text-left text-left text-left text-left"><button onclick="giveExtraTime('${sub.id}')" class="bg-brand-orange text-white p-2 rounded-xl text-left text-left text-left text-left text-left text-left"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6v6m0 0v6m0-6h6m-6 0H6" stroke-width="3"/></svg></button>${sub.status === 'pending' ? `<button onclick="publishResult('${sub.id}')" class="bg-white text-indigo-900 px-5 rounded-xl font-black text-[8px] uppercase text-center text-left text-left text-left text-left text-left">Yayınla</button>` : `<svg class="w-6 h-6 text-green-400 text-left text-left text-left text-left text-left text-left text-left" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="3"/></svg>`}</div></div>`).join('');
+        }
+        window.deleteStudent = async (id) => { if(confirm("Silinsin mi?")) { await _sb.from('students').delete().eq('id', id); fetchStudentsAndSubs(); } };
+        window.giveExtraTime = async (id) => { const m = prompt("Kaç dk?", "10"); if(!m) return; await _sb.from('submissions').update({ status: 'active', extra_time_until: new Date(Date.now()+m*60000).toISOString() }).eq('id', id); fetchStudentsAndSubs(); };
+
+        // --- SPECIAL: SETTINGS & SHUFFLE ---
+        window.openExamSettings = () => {
+            document.getElementById('edit-exam-title').value = curExam.title;
+            document.getElementById('edit-exam-code').value = curExam.code || '';
+            document.getElementById('edit-exam-duration').value = curExam.duration;
+            document.getElementById('settings-modal').classList.replace('hidden', 'flex');
+        };
+        window.closeSettingsModal = () => document.getElementById('settings-modal').classList.replace('flex', 'hidden');
+        window.saveExamSettings = async () => {
+            const t = document.getElementById('edit-exam-title').value;
+            const c = document.getElementById('edit-exam-code').value.trim().toUpperCase();
+            const d = document.getElementById('edit-exam-duration').value;
+            setCentralLoader(true);
+            const { error } = await _sb.from('exams').update({ title: t, code: c, duration: parseInt(d) }).eq('id', curExam.id);
+            setCentralLoader(false);
+            if (!error) {
+                curExam.title = t; curExam.code = c; curExam.duration = parseInt(d);
+                document.getElementById('m-exam-title').innerText = t;
+                document.getElementById('m-exam-code-display').innerText = "KOD: " + (c || curExam.id.substring(0,8));
+                closeSettingsModal();
+                showToast("Sınav ayarları güncellendi.");
+                fetchAllExams();
+            } else showToast("Kod kullanımda veya bir hata oluştu.");
+        };
+
+        window.shuffleQuestions = async () => {
+            if(!confirm("Soruların sırası rastgele karıştırılacaktır. Onaylıyor musunuz?")) return;
+            const shuffled = [...curExam.questions].sort(() => Math.random() - 0.5);
+            setCentralLoader(true);
+            const { error } = await _sb.from('exams').update({ questions: shuffled }).eq('id', curExam.id);
+            setCentralLoader(false);
+            if (!error) {
+                curExam.questions = shuffled;
+                renderQuestionsInManager();
+                showToast("Sorular rastgele karıştırıldı!");
+            }
+        };
+
+        // --- STUDENT ---
+        window.viewQuestionInfo = (idx) => {
+            const q = curExam.questions[idx]; const stdAns = stdAnswers[idx] || '-'; const isCorrect = stdAns === q.correct;
+            document.getElementById('modal-student-name').innerText = `SORU #${idx + 1} DETAYI`;
+            document.getElementById('modal-answers-content').innerHTML = `
+                <div class="space-y-6 text-left">
+                    ${q.image ? `<div class="bg-white p-4 rounded-3xl border shadow-md flex justify-center text-left"><img src="${q.image}" class="max-h-[350px] w-auto object-contain text-left"></div>` : ''}
+                    <div class="text-xl font-bold dark:text-white whitespace-pre-wrap text-left text-left text-left text-left text-left">${q.text || ""}</div>
+                    <div class="flex gap-4 p-5 glass rounded-[30px] border-2 ${isCorrect ? 'border-green-500/30 bg-green-50/10' : 'border-red-500/30 bg-red-50/10'} text-left text-left text-left text-left text-left text-left text-left">
+                        <div class="flex-1 text-left text-left text-left text-left text-left text-left text-left text-left">
+                            <p class="text-[10px] font-black uppercase text-slate-400 text-left text-left text-left text-left text-left text-left text-left text-left">Senin Cevabın</p>
+                            <p class="text-2xl font-black ${isCorrect ? 'text-green-600' : 'text-red-600'} text-left text-left text-left text-left text-left text-left text-left text-left text-left">${stdAns}</p>
+                        </div>
+                        <div class="flex-1 text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left">
+                            <p class="text-[10px] font-black uppercase text-slate-400 text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left">Doğru Cevap</p>
+                            <p class="text-2xl font-black text-indigo-600 text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left">${q.correct}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('details-modal').classList.replace('hidden', 'flex');
+        };
+
+        window.viewDetails = async (id) => {
+            const { data: sub } = await _sb.from('submissions').select('*').eq('id', id).single();
+            document.getElementById('modal-student-name').innerText = sub.student_name;
+            document.getElementById('modal-answers-content').innerHTML = curExam.questions.map((q, i) => {
+                const sAns = sub.answers[i] || '-', isC = sAns === q.correct;
+                return `<div class="glass p-4 rounded-[25px] border-2 ${isC ? 'border-green-500/20' : 'border-red-500/20'} text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><p class="text-xs font-black text-slate-600 dark:text-slate-200 mb-3 uppercase font-mono tracking-tight text-left text-left text-left text-left text-left text-left text-left text-left text-left">${q.text || "Görsel Soru"}</p><div class="flex gap-6 font-black text-[10px] uppercase text-left text-left text-left text-left text-left text-left text-left text-left"><span>Giriş: ${sAns}</span><span class="text-brand-light text-left text-left text-left text-left text-left">Doğru: ${q.correct}</span></div></div>`;
+            }).join('');
+            document.getElementById('details-modal').classList.replace('hidden', 'flex');
+        };
+
+        window.closeModal = () => document.getElementById('details-modal').classList.replace('flex', 'hidden');
+        window.addStudent = async () => { const n = document.getElementById('s-name-input').value, p = Math.random().toString(36).substring(2, 7).toUpperCase(); if(!n) return; await _sb.from('students').insert([{ exam_id: curExam.id, name: n, password: p }]); document.getElementById('s-name-input').value = ''; fetchStudentsAndSubs(); };
+        window.publishResult = async (id) => { await _sb.from('submissions').update({ status: 'published' }).eq('id', id); fetchStudentsAndSubs(); };
+
+        // --- LOGIN & ENTRY ---
+        window.studentLogin = async () => {
+            const btn = document.getElementById('student-login-btn');
+            const eid = document.getElementById('std-exam-id').value.trim().toUpperCase(), p = document.getElementById('std-pass').value.trim().toUpperCase(); 
+            if (!eid || !p) return showToast("Bilgi girin.");
+
+            btn.disabled = true; setCentralLoader(true); setProgress(40);
+            
+            try {
+                let { data: ex } = await _sb.from('exams').select('*').eq('code', eid).maybeSingle();
+                if(!ex && /^[0-9a-f]{8}/.test(eid)) { let { data: ex2 } = await _sb.from('exams').select('*').eq('id', eid).maybeSingle(); ex = ex2; }
+                if (!ex) throw new Error("Sınav kodu bulunamadı!");
+                
+                const { data: std } = await _sb.from('students').select('*').eq('exam_id', ex.id).eq('password', p).maybeSingle();
+                if (!std) throw new Error("Hatalı şifre!");
+
+                const { data: existingSub } = await _sb.from('submissions').select('*').eq('exam_id', ex.id).eq('student_id', std.id).maybeSingle();
+                if (existingSub && existingSub.status !== 'active' && existingSub.status !== 'published') {
+                    throw new Error("Bu sınava daha önce katıldınız!");
+                }
+
+                curExam = ex; curStudentSession = { std, ex }; isTeacherMode = false;
+                setTimeout(() => { setCentralLoader(false); setProgress(100); startExam(); }, 800);
+            } catch (err) {
+                setCentralLoader(false); btn.disabled = false; showToast(err.message);
+            }
+        };
+
+        function startTimer(m) {
+            let t = m * 60; if (timerInt) clearInterval(timerInt);
+            timerInt = setInterval(() => {
+                let mm = Math.floor(t / 60), ss = t % 60;
+                let display = `${mm.toString().padStart(2, '0')}:${ss.toString().padStart(2, '0')}`;
+                document.getElementById('exam-timer').innerText = display;
+                document.title = `${display} | Sınav Devam Ediyor`;
+                if (--t < 0) { clearInterval(timerInt); finishExam(); }
+            }, 1000);
+        }
+
+        function startExam() {
+            navigate('exam'); curQIdx = 0; stdAnswers = {};
+            setTimeout(() => { renderExamQuestion(); renderOpticalForm(); if(!isTeacherMode) startTimer(curExam.duration); }, 100);
+        }
+
+        function renderExamQuestion() {
+            clearCanvas(); const q = curExam.questions[curQIdx]; const c = document.getElementById('q-container'); if (!q) return;
+            let questionHTML = `<div class="space-y-6 text-left animate-in fadeIn duration-500 text-left"><h3 class="text-3xl font-black text-brand-light font-mono uppercase tracking-tighter text-left text-left text-left">Soru ${curQIdx + 1}</h3>`;
+            if(q.image) questionHTML += `<div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-xl border-2 border-indigo-100 dark:border-slate-800 inline-block mx-auto text-left text-left"><img src="${q.image}" class="max-h-[350px] w-full object-contain rounded-xl text-left text-left text-left"></div>`;
+            if(q.text) questionHTML += `<div class="text-xl font-semibold leading-relaxed dark:text-slate-100 whitespace-pre-wrap font-mono uppercase tracking-tight text-left text-left text-left text-left">${q.text}</div>`;
+            questionHTML += `</div>`;
+            c.innerHTML = questionHTML;
+
+            document.getElementById('q-inline-choices').innerHTML = ['A','B','C','D','E'].map(o => `<button onclick="setAns(${curQIdx},'${o}')" class="choice-btn w-14 h-14 rounded-xl border-2 font-black text-xl bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-300 transition-all text-center text-center text-center">${o}</button>`).join('');
+            if (questionDrawings[curQIdx]) { const img = new Image(); img.onload = () => ctx.drawImage(img, 0, 0); img.src = questionDrawings[curQIdx]; }
+            document.getElementById('q-btn-prev').disabled = curQIdx === 0;
+            document.getElementById('q-btn-next').innerText = curQIdx === curExam.questions.length - 1 ? (isTeacherMode ? "Bitir" : "Sınavı Bitir") : "İleri";
+        }
+        function renderOpticalForm() {
+            document.getElementById('opt-form').innerHTML = curExam.questions.map((q, i) => `<div onclick="jumpToQ(${i})" class="optik-item flex items-center gap-3 py-2 px-4 border-2 rounded-2xl transition-all cursor-pointer ${curQIdx === i ? 'active' : 'border-transparent'} ${stdAnswers[i] ? 'filled' : ''} text-left"><span class="w-8 flex items-center justify-center font-black text-[10px] text-slate-400 dark:text-slate-600 uppercase text-left text-left">#${i+1}</span><div class="flex gap-1.5 text-center text-center text-center">${['A','B','C','D','E'].map(o => `<div class="w-6 h-6 rounded-lg border-2 flex items-center justify-center font-black text-[9px] ${stdAnswers[i] === o ? 'bg-brand-light border-brand-light text-white shadow-md' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-200 dark:text-slate-700'} text-left text-left text-center text-left text-left">${o}</div>`).join('')}</div></div>`).join('');
+        }
+
+        window.jumpToQ = (i) => { if (canvas) questionDrawings[curQIdx] = canvas.toDataURL(); curQIdx = i; renderExamQuestion(); renderOpticalForm(); };
+        window.setAns = (i, o) => { if(isTeacherMode) return; if(stdAnswers[i] === o) delete stdAnswers[i]; else stdAnswers[i] = o; renderExamQuestion(); renderOpticalForm(); };
+        window.navQ = (d) => { if (canvas) questionDrawings[curQIdx] = canvas.toDataURL(); if (d === 1 && curQIdx === curExam.questions.length - 1) { if(isTeacherMode) location.reload(); else finishExamPrompt(); } else { curQIdx += d; renderExamQuestion(); renderOpticalForm(); } };
+        window.finishExamPrompt = () => { if (confirm("Onaylıyor musunuz?")) finishExam(); };
+        window.exitExam = () => { if(confirm("Çıkış?")) { document.title = "MATOTA"; location.reload(); } };
+
+        window.solveAsTeacher = (id) => {
+            curExam = exams.find(e => e.id === id); isTeacherMode = true; curStudentSession = null;
+            document.getElementById('active-title').innerText = "ÇÖZÜM MODU";
+            document.getElementById('exam-timer-box').style.display = 'none';
+            document.getElementById('finish-btn').style.display = 'none';
+            questionDrawings = {}; startExam();
+        };
+
+        async function finishExam() {
+            clearInterval(timerInt); document.title = "Sınav Bitti | MATOTA"; navigate('wait');
+            const { data: sub } = await _sb.from('submissions').insert([{ exam_id: curExam.id, student_id: curStudentSession.std.id, student_name: curStudentSession.std.name, answers: stdAnswers, status: 'pending' }]).select().single();
+            const chan = _sb.channel(`sub_${sub.id}`).on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'submissions', filter: `id=eq.${sub.id}` }, payload => {
+                if (payload.new.status === 'active') { _sb.removeChannel(chan); const end = new Date(payload.new.extra_time_until), now = new Date(); startExam(); startTimer(Math.floor((end - now) / 60000)); }
+                if (payload.new.status === 'published') { showFinalResults(payload.new); _sb.removeChannel(chan); }
+            }).subscribe();
+        }
+
+        function showFinalResults(sub) {
+            document.title = "Karneniz Hazır | MATOTA"; navigate('result'); let c = 0; curExam.questions.forEach((q, i) => { if (sub.answers[i] === q.correct) c++; });
+            const s = Math.round((c / curExam.questions.length) * 100);
+            document.getElementById('res-content').innerHTML = `<div class="text-center mb-10 text-center"><div class="inline-block p-14 glass rounded-full border-8 border-brand-light shadow-2xl mb-4 font-black text-7xl text-brand-light text-center text-center">%${s}</div><p class="text-slate-400 font-black uppercase text-[10px] tracking-widest text-center text-center">BAŞARI PUANI</p></div><div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-left text-left">${curExam.questions.map((q, i) => `<div onclick="viewQuestionInfo(${i})" class="glass p-5 rounded-[30px] border-2 ${sub.answers[i] === q.correct ? 'border-green-500/20' : 'border-red-500/20'} flex justify-between items-center text-left text-xs uppercase font-bold cursor-pointer transition-transform hover:scale-[1.02] text-left"><div class="text-left text-left">#${i+1}</div><div class="flex gap-5 text-left text-left"><span class="opacity-40 text-left text-left">Sen: ${sub.answers[i] || '-'}</span><span class="text-brand-light text-left text-left">Doğru: ${q.correct}</span></div></div>`).join('')}</div>`;
+        }
+
+        window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.classList.remove('hidden'); setTimeout(() => t.classList.add('hidden'), 3500); };
+        window.onload = init;
+    </script>
+</body>
+</html>
