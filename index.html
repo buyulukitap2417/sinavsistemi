@@ -256,41 +256,59 @@
         </div>
     </nav>
 
-    <!-- 1. PORTAL (ANA SAYFA) -->
-    <section id="portal-section" class="view-section max-w-5xl mx-auto my-auto px-4 py-10 text-center">
+    <!-- 1. PORTAL (ANA SAYFA & ÖĞRENCİ GİRİŞ EKRANI) -->
+    <section id="portal-section" class="view-section max-w-5xl mx-auto my-auto px-4 py-8 text-center">
         <div class="relative">
             <!-- Glow Efektleri -->
             <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-brand-500/15 rounded-full blur-3xl pointer-events-none"></div>
 
-            <div class="glass p-8 sm:p-14 rounded-[36px] shadow-2xl border-white/40 dark:border-white/10 relative z-10">
-                <div class="inline-flex items-center gap-2 bg-brand-500/10 text-brand-600 dark:text-brand-400 px-4 py-1.5 rounded-full font-bold text-xs uppercase tracking-wider mb-6">
-                    <span class="w-2 h-2 rounded-full bg-brand-500 animate-ping"></span>
-                    Online Ölçme & Değerlendirme
+            <div class="glass p-6 sm:p-12 rounded-[36px] shadow-2xl border-white/40 dark:border-white/10 relative z-10">
+                
+                <!-- Genel Karşılama Başlığı (Doğrudan Linkte Gizlenir) -->
+                <div id="portal-hero-text">
+                    <div class="inline-flex items-center gap-2 bg-brand-500/10 text-brand-600 dark:text-brand-400 px-4 py-1.5 rounded-full font-bold text-xs uppercase tracking-wider mb-4">
+                        <span class="w-2 h-2 rounded-full bg-brand-500 animate-ping"></span>
+                        Online Ölçme & Değerlendirme
+                    </div>
+
+                    <h2 class="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight uppercase mb-3 leading-tight">
+                        Ali ŞENGÜL <br class="hidden sm:inline">
+                        <span class="bg-gradient-to-r from-brand-600 to-indigo-400 bg-clip-text text-transparent">DİJİTAL SINAV SİSTEMİ</span>
+                    </h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm max-w-xl mx-auto font-medium mb-6 leading-relaxed">
+                        Yüksek hızlı, canlı takip destekli, akıllı çizim tahtalı ve anlık karne analizli resmi sınav platformu.
+                    </p>
                 </div>
 
-                <h2 class="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight uppercase mb-3 leading-tight">
-                    Ali ŞENGÜL <br class="hidden sm:inline">
-                    <span class="bg-gradient-to-r from-brand-600 to-indigo-400 bg-clip-text text-transparent">DİJİTAL SINAV VE ÖLÇME SİSTEMİ</span>
-                </h2>
-                <p class="text-slate-500 dark:text-slate-400 text-sm sm:text-base max-w-xl mx-auto font-medium mb-8 leading-relaxed">
-                    Yüksek hızlı, canlı takip destekli, akıllı çizim tahtalı ve anlık karne analizli resmi sınav platformu.
-                </p>
+                <!-- Doğrudan Öğrenci Linki Başlığı (Sadece ?exam= varken görünür) -->
+                <div id="student-direct-badge" class="hidden mb-6 text-center">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-500 text-white flex items-center justify-center font-black text-xl shadow-xl shadow-brand-500/30 mx-auto mb-3">
+                        AŞ
+                    </div>
+                    <h3 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight" id="direct-exam-title">Sınav Girişi</h3>
+                    <p class="text-xs font-bold text-brand-600 dark:text-brand-400 mt-1">Ali ŞENGÜL Dijital Sınav ve Ölçme Sistemi</p>
+                </div>
 
                 <!-- Hızlı Giriş Kartı -->
-                <div class="max-w-md mx-auto bg-white/70 dark:bg-slate-900/70 p-6 sm:p-8 rounded-3xl shadow-xl border border-slate-200/80 dark:border-slate-800 mb-8 space-y-4 text-left">
-                    <h3 class="text-xs font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2 flex items-center gap-2">
-                        <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
-                        Öğrenci Sınav Girişi
+                <div class="max-w-md mx-auto bg-white/70 dark:bg-slate-900/70 p-6 sm:p-8 rounded-3xl shadow-xl border border-slate-200/80 dark:border-slate-800 mb-6 space-y-4 text-left">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-1 flex items-center justify-between">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+                            Öğrenci Sınav Girişi
+                        </span>
+                        <span id="exam-code-lock-badge" class="hidden text-[9px] font-black text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded-md">🔒 KİLİTLİ KOD</span>
                     </h3>
 
                     <div>
-                        <label class="text-[11px] font-bold text-slate-500 uppercase">Sınav Kodu</label>
+                        <label class="text-[11px] font-bold text-slate-500 uppercase flex justify-between">
+                            <span>Sınav Kodu</span>
+                        </label>
                         <input type="text" id="quick-exam-code" placeholder="Örn: MAT-101" class="w-full mt-1 p-3.5 bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl outline-none focus:border-brand-500 font-mono font-bold text-center tracking-widest uppercase transition text-sm">
                     </div>
 
                     <div>
                         <label class="text-[11px] font-bold text-slate-500 uppercase">Öğrenci Özel Şifresi</label>
-                        <input type="text" id="quick-student-pass" placeholder="Örn: 9X4A2" class="w-full mt-1 p-3.5 bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl outline-none focus:border-brand-500 font-mono font-bold text-center tracking-widest uppercase transition text-sm">
+                        <input type="text" id="quick-student-pass" placeholder="Öğrenci Şifreniz (Örn: 9X4A2)" onkeydown="if(event.key === 'Enter') startQuickLogin()" class="w-full mt-1 p-3.5 bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl outline-none focus:border-brand-500 font-mono font-bold text-center tracking-widest uppercase transition text-sm">
                     </div>
 
                     <button onclick="startQuickLogin()" id="quick-login-btn" class="btn-hover w-full bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 text-white py-4 rounded-2xl font-black text-sm uppercase tracking-wider shadow-lg shadow-brand-500/30 flex items-center justify-center gap-2">
@@ -299,8 +317,8 @@
                     </button>
                 </div>
 
-                <!-- Alt Hızlı Butonlar -->
-                <div class="flex flex-wrap justify-center gap-4 text-xs font-bold text-slate-500">
+                <!-- Alt Hızlı Butonlar (Doğrudan Linkte Gizlenir) -->
+                <div id="portal-teacher-btn-wrapper" class="flex flex-wrap justify-center gap-4 text-xs font-bold text-slate-500">
                     <button onclick="navigate('teacher-login')" class="px-5 py-2.5 rounded-xl bg-white/40 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60 transition flex items-center gap-2">
                         <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                         Öğretmen / Yönetici Girişi
@@ -378,8 +396,8 @@
                 <h3 id="stat-total-subs" class="text-2xl font-black text-amber-600 dark:text-amber-400 mt-1">0</h3>
             </div>
             <div class="glass p-5 rounded-2xl border-white/30">
-                <p class="text-[10px] font-black uppercase text-slate-400 tracking-wider">Ortalama Başarı</p>
-                <h3 id="stat-avg-score" class="text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-1">-%</h3>
+                <p class="text-[10px] font-black uppercase text-slate-400 tracking-wider">Platform Durumu</p>
+                <h3 id="stat-avg-score" class="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1">Aktif</h3>
             </div>
         </div>
 
@@ -1030,18 +1048,20 @@
         const SB_URL = 'https://uuolgqipaltotaxutfgw.supabase.co';
         const SB_KEY = 'sb_publishable_WuSvqXpwM0z_u3Mek0zMLw_FT94Hh5G';
         const APP_DOMAIN = 'https://sinav.alisengul.net';
-        let _sb;
+        let _sb = null;
 
         // --- UYGULAMA DURUMU (APPLICATION STATE) ---
-        let exams = [], curExam = null, curStudentSession = null, stdAnswers = {}, flaggedQs = new Set(), struckChoices = {};
+        let exams = [], curExam = null, curStudentSession = null, curSubmissionId = null;
+        let stdAnswers = {}, flaggedQs = new Set(), struckChoices = {};
         let curQIdx = 0, timerInt = null, tempImg = null, liveSyncDebounce = null, heartbeatInt = null;
-        let isEditMode = false, editingQIdx = -1, isTeacherMode = false;
+        let isEditMode = false, editingQIdx = -1, isTeacherMode = false, isDirectExamMode = false;
+        let isAllLiveOpen = false;
         let questionDrawings = {}, questionStrokes = {}; // Undo/Redo için
         let penColor = '#000000', brushSize = 2, activeFontSize = 'md', optViewMode = 'list';
         let isAudioEnabled = true;
 
         // Canlı Takip Değişkenleri
-        let activeLiveSubId = null, liveChannel = null, activeLiveExamStudents = [];
+        let activeLiveSubId = null, liveChannel = null, teacherExamChannel = null, teacherPollInterval = null, activeLiveExamStudents = [];
 
         // --- SEKMEDEN AYRILMA / KAPATMA KORUMASI ---
         window.addEventListener('beforeunload', (e) => {
@@ -1326,21 +1346,68 @@
             loadTheme();
             if (window.supabase) {
                 _sb = window.supabase.createClient(SB_URL, SB_KEY);
-                const session = JSON.parse(localStorage.getItem('alisengul_auth') || '{}');
+                const session = JSON.parse(localStorage.getItem('alisengul_auth') || localStorage.getItem('matota_auth') || '{}');
                 const eid = new URLSearchParams(window.location.search).get('exam');
 
                 if (eid) {
-                    navigate('portal');
-                    document.getElementById('quick-exam-code').value = decodeURIComponent(eid).trim().toUpperCase();
+                    setupStudentDirectPortal(decodeURIComponent(eid).trim().toUpperCase());
                 } else if (session.isTeacher) {
                     navigate('teacher-dashboard');
                 } else {
                     navigate('portal');
                 }
-            } else setTimeout(init, 100);
+            } else {
+                setTimeout(init, 100);
+            }
 
             // Klavye Kısayolları Dinleyicisi
             window.addEventListener('keydown', handleKeyNav);
+        }
+
+        // --- DOĞRUDAN ÖĞRENCİ LİNKİ ARAYÜZÜ (KİLİTLİ, SADELENMİŞ GİRİŞ) ---
+        async function setupStudentDirectPortal(examCode) {
+            isDirectExamMode = true;
+            navigate('portal');
+
+            const mainNav = document.getElementById('main-nav');
+            if (mainNav) mainNav.style.display = 'none';
+
+            const heroText = document.getElementById('portal-hero-text');
+            if (heroText) heroText.classList.add('hidden');
+
+            const teacherBtnWrapper = document.getElementById('portal-teacher-btn-wrapper');
+            if (teacherBtnWrapper) teacherBtnWrapper.classList.add('hidden');
+
+            const directBadge = document.getElementById('student-direct-badge');
+            if (directBadge) directBadge.classList.remove('hidden');
+
+            const lockBadge = document.getElementById('exam-code-lock-badge');
+            if (lockBadge) lockBadge.classList.remove('hidden');
+
+            const codeInput = document.getElementById('quick-exam-code');
+            if (codeInput) {
+                codeInput.value = examCode;
+                codeInput.readOnly = true;
+                codeInput.disabled = true;
+                codeInput.className = 'w-full mt-1 p-3.5 bg-slate-100 dark:bg-slate-800/90 border-2 border-brand-500/40 rounded-2xl outline-none font-mono font-black text-center tracking-widest uppercase transition text-sm cursor-not-allowed text-brand-600 dark:text-brand-400 shadow-inner';
+            }
+
+            const passInput = document.getElementById('quick-student-pass');
+            if (passInput) {
+                setTimeout(() => passInput.focus(), 250);
+            }
+
+            try {
+                let { data: ex } = await _sb.from('exams').select('title, code, duration').eq('code', examCode).maybeSingle();
+                if (!ex && /^[0-9a-f]{8}/.test(examCode)) {
+                    let { data: ex2 } = await _sb.from('exams').select('title, code, duration').eq('id', examCode).maybeSingle();
+                    ex = ex2;
+                }
+                if (ex) {
+                    document.getElementById('direct-exam-title').innerText = ex.title;
+                    document.title = `${ex.title} | Ali ŞENGÜL Sınav Girişi`;
+                }
+            } catch(e) {}
         }
 
         function handleKeyNav(e) {
@@ -1364,7 +1431,13 @@
             window.location.hash = view;
 
             const mainNav = document.getElementById('main-nav');
-            if (view === 'exam') mainNav.style.display = 'none'; else mainNav.style.display = 'flex';
+            if (mainNav) {
+                if (view === 'exam' || (view === 'portal' && isDirectExamMode)) {
+                    mainNav.style.display = 'none';
+                } else {
+                    mainNav.style.display = 'flex';
+                }
+            }
 
             if (view === 'teacher-dashboard') fetchAllExams();
             if (view === 'exam') {
@@ -1375,7 +1448,7 @@
         };
 
         window.handleNavToPanel = () => {
-            const s = JSON.parse(localStorage.getItem('alisengul_auth') || '{}');
+            const s = JSON.parse(localStorage.getItem('alisengul_auth') || localStorage.getItem('matota_auth') || '{}');
             if (s.isTeacher) navigate('teacher-dashboard'); else navigate('teacher-login');
         };
         window.handleTeacherAuth = function() {
@@ -1394,13 +1467,20 @@
 
         // --- ÖĞRETMEN YÖNETİM FONKSİYONLARI ---
         async function fetchAllExams() {
+            if (!_sb) {
+                setTimeout(fetchAllExams, 150);
+                return;
+            }
             setProgress(30);
-            const { data, error } = await _sb.from('exams').select('id, title, code, duration, created_at, questions').order('created_at', { ascending: false });
+            const { data, error } = await _sb.from('exams').select('id, title, code, duration, created_at').order('created_at', { ascending: false });
             setProgress(100);
             if (!error) {
                 exams = data || [];
                 renderExamsList();
                 updateDashboardStats();
+            } else {
+                console.error("Supabase exam fetch error:", error);
+                showToast("Sınavlar yüklenirken bir sorun oluştu: " + (error.message || "Bilinmiyor"));
             }
         }
 
@@ -1409,7 +1489,7 @@
             _sb.from('students').select('id', { count: 'exact' }).then(res => {
                 if(res.count !== null) document.getElementById('stat-total-students').innerText = res.count;
             });
-            _sb.from('submissions').select('id, answers', { count: 'exact' }).then(res => {
+            _sb.from('submissions').select('id', { count: 'exact' }).then(res => {
                 if(res.count !== null) document.getElementById('stat-total-subs').innerText = res.count;
             });
         }
@@ -1429,7 +1509,6 @@
                             <span class="text-[9px] font-mono font-black uppercase text-brand-600 dark:text-brand-400 bg-brand-500/10 px-2 py-0.5 rounded-md">#${ex.code || ex.id.substring(0,8)}</span>
                         </div>
                         <div class="flex items-center gap-3 mt-1.5 text-slate-400 text-[10px] font-bold">
-                            <span>📝 ${ex.questions?.length || 0} Soru</span>
                             <span>⏱️ ${ex.duration || 40} Dk</span>
                             <span>📅 ${new Date(ex.created_at).toLocaleDateString('tr-TR')}</span>
                         </div>
@@ -1495,14 +1574,53 @@
             }
         };
 
-        window.openExamManager = (id) => {
-            curExam = exams.find(e => e.id === id);
+        window.openExamManager = async (id) => {
+            setCentralLoader(true, "Sınav Yükleniyor...", "Sorular ve öğrenci verileri alınıyor", 40);
+            const { data: ex, error } = await _sb.from('exams').select('*').eq('id', id).single();
+            setCentralLoader(false);
+            if(error || !ex) return showToast("Sınav bilgileri yüklenemedi.");
+
+            curExam = ex;
             document.getElementById('m-exam-title').innerText = curExam.title;
             document.getElementById('m-exam-code-display').innerText = "KOD: " + (curExam.code || curExam.id.substring(0,8));
             document.getElementById('m-exam-duration-display').innerText = `⏱️ ${curExam.duration || 40} DK`;
             navigate('manage-exam');
             renderQuestionsInManager();
             fetchStudentsAndSubs();
+
+            // Realtime Listener for Submissions in Teacher View
+            if (teacherExamChannel) _sb.removeChannel(teacherExamChannel);
+            teacherExamChannel = _sb.channel(`teacher_exam_${curExam.id}`).on('postgres_changes', {
+                event: '*', schema: 'public', table: 'submissions', filter: `exam_id=eq.${curExam.id}`
+            }, () => {
+                fetchStudentsAndSubs();
+                if(activeLiveSubId) refreshLiveModalData();
+                if(isAllLiveOpen) refreshAllLiveGrid();
+            }).subscribe();
+
+            // Otomatik canlı yoklama periyodu (Fallback)
+            if (teacherPollInterval) clearInterval(teacherPollInterval);
+            teacherPollInterval = setInterval(() => {
+                const mSec = document.getElementById('manage-exam-section');
+                if (mSec && !mSec.classList.contains('hidden') && curExam) {
+                    fetchStudentsAndSubs();
+                    if(activeLiveSubId) refreshLiveModalData();
+                    if(isAllLiveOpen) refreshAllLiveGrid();
+                }
+            }, 3500);
+        };
+
+        window.solveAsTeacher = async (id) => {
+            setCentralLoader(true, "Sınav Hazırlanıyor...", "Sorular yükleniyor", 40);
+            const { data: ex } = await _sb.from('exams').select('*').eq('id', id).single();
+            setCentralLoader(false);
+            if(!ex) return showToast("Sınav yüklenemedi.");
+
+            curExam = ex;
+            isTeacherMode = true; curStudentSession = null;
+            document.getElementById('exam-timer-box').style.display = 'none';
+            document.getElementById('finish-btn').innerText = "Çözüm Modundan Çık";
+            startExam();
         };
 
         window.copyShareLink = () => {
@@ -1643,6 +1761,7 @@
 
         // --- ÖĞRENCİ VE YANIT YÖNETİMİ ---
         async function fetchStudentsAndSubs() {
+            if (!_sb || !curExam) return;
             const { data: stds } = await _sb.from('students').select('*').eq('exam_id', curExam.id).order('created_at', { ascending: true });
             const { data: subs } = await _sb.from('submissions').select('*').eq('exam_id', curExam.id).order('created_at', { ascending: false });
 
@@ -1651,7 +1770,9 @@
 
             document.getElementById('s-list').innerHTML = (stds || []).map(s => {
                 const sub = (subs || []).find(sub => sub.student_id === s.id);
-                const isOnline = sub && sub.status === 'active';
+                const meta = sub?.answers?._meta || {};
+                const lastPing = meta.last_ping ? new Date(meta.last_ping) : (sub?.created_at ? new Date(sub.created_at) : null);
+                const isOnline = sub && sub.status === 'active' && lastPing && ((Date.now() - lastPing.getTime()) < 45000);
                 return `
                 <div class="glass p-3 rounded-xl border flex justify-between items-center gap-2">
                     <div class="flex flex-col flex-1">
@@ -1674,13 +1795,18 @@
             }).join('');
 
             document.getElementById('sub-list').innerHTML = (subs || []).map(sub => {
-                const isActive = sub.status === 'active';
+                const meta = sub.answers?._meta || {};
+                const lastPing = meta.last_ping ? new Date(meta.last_ping) : (sub.created_at ? new Date(sub.created_at) : null);
+                const isActive = sub.status === 'active' && lastPing && ((Date.now() - lastPing.getTime()) < 45000);
+                const isPending = sub.status === 'pending';
+                const isPublished = sub.status === 'published';
+
                 return `
                 <div class="glass p-3.5 rounded-2xl flex justify-between items-center border gap-2">
                     <div class="cursor-pointer flex-1" onclick="viewDetails('${sub.id}')">
                         <div class="flex items-center gap-2">
                             <p class="font-black text-xs uppercase text-slate-800 dark:text-white">${sub.student_name}</p>
-                            ${isActive ? `<span class="px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-600 font-extrabold text-[8px] uppercase animate-pulse">ÇÖZÜYOR</span>` : ''}
+                            ${isActive ? `<span class="px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-600 font-extrabold text-[8px] uppercase animate-pulse">ÇÖZÜYOR</span>` : isPending ? `<span class="px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-600 font-extrabold text-[8px] uppercase">BİTTİ (ONAY BEKLİYOR)</span>` : `<span class="px-2 py-0.5 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-500 font-extrabold text-[8px] uppercase">TAMAMLANDI</span>`}
                         </div>
                         <p class="text-[9px] font-bold text-brand-600 dark:text-brand-400 uppercase mt-0.5">İncele & Karne →</p>
                     </div>
@@ -1692,9 +1818,11 @@
                         <button onclick="giveExtraTime('${sub.id}')" title="+Ek Süre Ver" class="bg-amber-500/10 text-amber-600 p-2 rounded-xl hover:bg-amber-500 hover:text-white transition">
                             ⏱️
                         </button>
-                        ${sub.status === 'pending'
+                        ${isPending
                             ? `<button onclick="publishResult('${sub.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl font-black text-[9px] uppercase shadow">Yayınla</button>`
-                            : `<span class="text-emerald-500 font-bold text-[10px] flex items-center gap-1">✓ Yayında</span>`}
+                            : isPublished
+                            ? `<span class="text-emerald-500 font-bold text-[10px] flex items-center gap-1">✓ Yayında</span>`
+                            : `<span class="text-slate-400 font-bold text-[10px] flex items-center gap-1">Devam Ediyor</span>`}
                     </div>
                 </div>`;
             }).join('');
@@ -1784,7 +1912,7 @@
             soundClick();
             await refreshLiveModalData();
 
-            // Realtime Live Subscriber
+            // Realtime Live Subscriber for Specific Student
             if(liveChannel) _sb.removeChannel(liveChannel);
             liveChannel = _sb.channel(`live_sub_${subId}`).on('postgres_changes', {
                 event: 'UPDATE', schema: 'public', table: 'submissions', filter: `id=eq.${subId}`
@@ -1809,9 +1937,9 @@
             document.getElementById('live-student-name').innerText = sub.student_name;
             document.getElementById('live-student-exam-title').innerText = curExam ? curExam.title : "Ali ŞENGÜL Sınav Sistemi";
 
-            // Online / Heartbeat Durumu
-            const lastPingDate = sub.updated_at ? new Date(sub.updated_at) : new Date();
-            const diffSeconds = Math.round((Date.now() - lastPingDate.getTime()) / 1000);
+            const meta = (sub.answers && sub.answers._meta) || {};
+            const lastPingDate = meta.last_ping ? new Date(meta.last_ping) : (sub.created_at ? new Date(sub.created_at) : new Date());
+            const diffSeconds = Math.max(0, Math.round((Date.now() - lastPingDate.getTime()) / 1000));
             const isOnline = sub.status === 'active' && diffSeconds < 45;
 
             const statusPill = document.getElementById('live-status-pill');
@@ -1835,17 +1963,17 @@
             }
 
             // Anlık Konum
-            const answers = sub.answers || {};
-            const lastQ = (sub.current_q !== undefined && sub.current_q !== null) ? sub.current_q : 0;
-            document.getElementById('live-current-pos').innerText = sub.current_page || `📍 Soru #${lastQ + 1}`;
+            const lastQ = meta.current_q !== undefined ? meta.current_q : 0;
+            document.getElementById('live-current-pos').innerText = meta.current_page || `📍 Soru #${lastQ + 1}`;
             document.getElementById('live-last-ping').innerText = diffSeconds < 10 ? "Az önce" : `${diffSeconds} sn önce`;
 
             // Skor & Doğru / Yanlış Hesaplama
             let correct = 0, wrong = 0, filled = 0;
-            const qs = curExam ? curExam.questions : [];
+            const qs = curExam ? (curExam.questions || []) : [];
+            const answers = sub.answers || {};
             qs.forEach((q, i) => {
                 const a = answers[i];
-                if(a) {
+                if(a && a !== '_meta') {
                     filled++;
                     if(a === q.correct) correct++;
                     else wrong++;
@@ -1902,14 +2030,19 @@
 
         // --- TÜM SINIF CANLI İZLEME MASASI ---
         window.openAllLiveMonitor = async () => {
+            isAllLiveOpen = true;
             document.getElementById('all-live-monitor-modal').classList.replace('hidden', 'flex');
             document.getElementById('all-live-exam-subtitle').innerText = `${curExam.title} (${curExam.code || curExam.id.substring(0,8)}) - Canlı Sınav Masası`;
             soundClick();
             await refreshAllLiveGrid();
         };
-        window.closeAllLiveMonitor = () => document.getElementById('all-live-monitor-modal').classList.replace('flex', 'hidden');
+        window.closeAllLiveMonitor = () => {
+            isAllLiveOpen = false;
+            document.getElementById('all-live-monitor-modal').classList.replace('flex', 'hidden');
+        };
 
         async function refreshAllLiveGrid() {
+            if(!_sb || !curExam) return;
             const { data: stds } = await _sb.from('students').select('*').eq('exam_id', curExam.id).order('name', { ascending: true });
             const { data: subs } = await _sb.from('submissions').select('*').eq('exam_id', curExam.id);
 
@@ -1923,16 +2056,17 @@
             grid.innerHTML = stds.map(s => {
                 const sub = (subs || []).find(sub => sub.student_id === s.id);
                 const answers = sub?.answers || {};
+                const meta = answers?._meta || {};
                 let correct = 0, wrong = 0, filled = 0;
                 qs.forEach((q, i) => {
-                    if(answers[i]) {
+                    if(answers[i] && answers[i] !== '_meta') {
                         filled++;
                         if(answers[i] === q.correct) correct++;
                         else wrong++;
                     }
                 });
 
-                const lastPing = sub?.updated_at ? new Date(sub.updated_at) : null;
+                const lastPing = meta.last_ping ? new Date(meta.last_ping) : (sub?.created_at ? new Date(sub.created_at) : null);
                 const isOnline = sub && sub.status === 'active' && lastPing && ((Date.now() - lastPing.getTime()) < 45000);
 
                 return `
@@ -1955,7 +2089,7 @@
                             </div>
 
                             <p class="text-[10px] font-semibold text-slate-400 mt-2">
-                                Konum: <span class="font-bold text-slate-700 dark:text-slate-200">${sub?.current_page || 'Giriş Bekleniyor'}</span>
+                                Konum: <span class="font-bold text-slate-700 dark:text-slate-200">${meta.current_page || (sub ? 'Sınava Katıldı' : 'Giriş Bekleniyor')}</span>
                             </p>
                         </div>
 
@@ -1978,19 +2112,36 @@
         }
 
         async function sendLiveSync(pageDesc = null) {
-            if(isTeacherMode || !curStudentSession) return;
+            if(isTeacherMode || !curStudentSession || !_sb) return;
             try {
                 const pDesc = pageDesc || `Soru #${curQIdx + 1}`;
-                await _sb.from('submissions').upsert([{
-                    exam_id: curExam.id,
-                    student_id: curStudentSession.std.id,
-                    student_name: curStudentSession.std.name,
-                    answers: stdAnswers,
-                    current_q: curQIdx,
-                    current_page: pDesc,
-                    status: 'active'
-                }], { onConflict: 'exam_id, student_id' });
-            } catch(e) {}
+                const payloadAnswers = {
+                    ...stdAnswers,
+                    _meta: {
+                        current_q: curQIdx,
+                        current_page: pDesc,
+                        last_ping: new Date().toISOString()
+                    }
+                };
+
+                if (curSubmissionId) {
+                    await _sb.from('submissions').update({
+                        answers: payloadAnswers,
+                        status: 'active'
+                    }).eq('id', curSubmissionId);
+                } else {
+                    const { data } = await _sb.from('submissions').insert([{
+                        exam_id: curExam.id,
+                        student_id: curStudentSession.std.id,
+                        student_name: curStudentSession.std.name,
+                        answers: payloadAnswers,
+                        status: 'active'
+                    }]).select().single();
+                    if(data) curSubmissionId = data.id;
+                }
+            } catch(e) {
+                console.error("sendLiveSync error:", e);
+            }
         }
 
         // --- SINAV AYARLARI ---
@@ -2022,7 +2173,7 @@
             } else showToast("Hata: Kod kullanımda olabilir.");
         };
 
-        // --- ÖĞRENCİ SINAV GİRİŞİ (YÜKSEK HIZLI, GÜVENLİ VE TEK GİRİŞ KONTROLLÜ) ---
+        // --- ÖĞRENCİ SINAV GİRİŞİ ---
         window.startQuickLogin = async () => {
             const eid = document.getElementById('quick-exam-code').value.trim().toUpperCase();
             const p = document.getElementById('quick-student-pass').value.trim().toUpperCase();
@@ -2034,7 +2185,7 @@
 
             try {
                 // Sınav Sorgusu
-                let { data: ex, error: exErr } = await _sb.from('exams').select('*').eq('code', eid).maybeSingle();
+                let { data: ex } = await _sb.from('exams').select('*').eq('code', eid).maybeSingle();
                 if(!ex && /^[0-9a-f]{8}/.test(eid)) {
                     let { data: ex2 } = await _sb.from('exams').select('*').eq('id', eid).maybeSingle();
                     ex = ex2;
@@ -2086,7 +2237,6 @@
                 document.getElementById('exam-timer').innerText = display;
                 document.title = `${display} | Ali ŞENGÜL Sınav Sistemi`;
 
-                // Süre uyarısı renkleri
                 const box = document.getElementById('exam-timer-box');
                 if (t <= 60) {
                     box.classList.add('text-rose-600', 'border-rose-500', 'animate-pulse');
@@ -2098,32 +2248,45 @@
             }, 1000);
         }
 
-        function startExam() {
+        async function startExam() {
             navigate('exam');
             curQIdx = 0; stdAnswers = {}; flaggedQs.clear(); struckChoices = {};
             document.getElementById('active-title').innerText = curExam.title;
             document.getElementById('student-name-display').innerText = isTeacherMode ? "Öğretmen Çözüm Modu" : curStudentSession.std.name;
 
-            setTimeout(() => {
+            setTimeout(async () => {
                 renderExamQuestion();
                 renderOpticalForm();
                 if(!isTeacherMode) {
                     startTimer(curExam.duration || 40);
+
+                    // Başlangıç Submission Kaydı Oluştur / Getir
+                    try {
+                        const { data: existingSub } = await _sb.from('submissions').select('*').eq('exam_id', curExam.id).eq('student_id', curStudentSession.std.id).maybeSingle();
+                        const initMetaAnswers = { _meta: { current_q: 0, current_page: 'Soru #1', last_ping: new Date().toISOString() } };
+                        if (existingSub) {
+                            curSubmissionId = existingSub.id;
+                            await _sb.from('submissions').update({ answers: initMetaAnswers, status: 'active' }).eq('id', curSubmissionId);
+                        } else {
+                            const { data: newSub } = await _sb.from('submissions').insert([{
+                                exam_id: curExam.id,
+                                student_id: curStudentSession.std.id,
+                                student_name: curStudentSession.std.name,
+                                answers: initMetaAnswers,
+                                status: 'active'
+                            }]).select().single();
+                            if(newSub) curSubmissionId = newSub.id;
+                        }
+                    } catch(e) {
+                        console.error("Submission init error:", e);
+                    }
+
                     // Canlı Heartbeat Başlat
-                    sendLiveSync('Sınava Başladı (Soru #1)');
                     if(heartbeatInt) clearInterval(heartbeatInt);
-                    heartbeatInt = setInterval(() => sendLiveSync(), 5000);
+                    heartbeatInt = setInterval(() => sendLiveSync(), 3500);
                 }
             }, 80);
         }
-
-        window.solveAsTeacher = (id) => {
-            curExam = exams.find(e => e.id === id);
-            isTeacherMode = true; curStudentSession = null;
-            document.getElementById('exam-timer-box').style.display = 'none';
-            document.getElementById('finish-btn').innerText = "Çözüm Modundan Çık";
-            startExam();
-        };
 
         // --- SINAV SORUSU VE OPTİK FORM RENDER MOTORU ---
         function renderExamQuestion() {
@@ -2315,31 +2478,54 @@
             navigate('wait');
             soundSuccess();
 
-            const { data: sub } = await _sb.from('submissions').upsert([{
-                exam_id: curExam.id,
-                student_id: curStudentSession.std.id,
-                student_name: curStudentSession.std.name,
-                answers: stdAnswers,
-                current_page: 'Sınavı Tamamladı',
-                status: 'pending'
-            }], { onConflict: 'exam_id, student_id' }).select().single();
+            const payloadAnswers = {
+                ...stdAnswers,
+                _meta: {
+                    current_q: curQIdx,
+                    current_page: 'Sınavı Tamamladı',
+                    last_ping: new Date().toISOString(),
+                    finished_at: new Date().toISOString()
+                }
+            };
 
-            // Realtime Kanal Dinleyicisi
-            const chan = _sb.channel(`sub_${sub.id}`).on('postgres_changes', {
-                event: 'UPDATE', schema: 'public', table: 'submissions', filter: `id=eq.${sub.id}`
-            }, payload => {
-                if (payload.new.status === 'active') {
-                    _sb.removeChannel(chan);
-                    const end = new Date(payload.new.extra_time_until), now = new Date();
-                    startExam();
-                    startTimer(Math.max(1, Math.floor((end - now) / 60000)));
-                    showToast("Öğretmeniniz ek süre tanımladı!");
-                }
-                if (payload.new.status === 'published') {
-                    showFinalResults(payload.new);
-                    _sb.removeChannel(chan);
-                }
-            }).subscribe();
+            let sub = null;
+            if (curSubmissionId) {
+                const { data } = await _sb.from('submissions').update({
+                    answers: payloadAnswers,
+                    status: 'pending'
+                }).eq('id', curSubmissionId).select().single();
+                sub = data;
+            } else {
+                const { data } = await _sb.from('submissions').insert([{
+                    exam_id: curExam.id,
+                    student_id: curStudentSession.std.id,
+                    student_name: curStudentSession.std.name,
+                    answers: payloadAnswers,
+                    status: 'pending'
+                }]).select().single();
+                sub = data;
+                if(sub) curSubmissionId = sub.id;
+            }
+
+            if(sub) {
+                // Realtime Kanal Dinleyicisi
+                if(liveChannel) _sb.removeChannel(liveChannel);
+                liveChannel = _sb.channel(`sub_${sub.id}`).on('postgres_changes', {
+                    event: 'UPDATE', schema: 'public', table: 'submissions', filter: `id=eq.${sub.id}`
+                }, payload => {
+                    if (payload.new.status === 'active') {
+                        if(liveChannel) _sb.removeChannel(liveChannel);
+                        const end = new Date(payload.new.extra_time_until), now = new Date();
+                        startExam();
+                        startTimer(Math.max(1, Math.floor((end - now) / 60000)));
+                        showToast("Öğretmeniniz ek süre tanımladı!");
+                    }
+                    if (payload.new.status === 'published') {
+                        showFinalResults(payload.new);
+                        if(liveChannel) _sb.removeChannel(liveChannel);
+                    }
+                }).subscribe();
+            }
         }
 
         // --- SONUÇ VE KARNE RAPORU GÖSTERİMİ ---
@@ -2350,13 +2536,13 @@
 
             let correctCount = 0, wrongCount = 0, emptyCount = 0;
             curExam.questions.forEach((q, i) => {
-                const sAns = sub.answers[i];
+                const sAns = sub.answers ? sub.answers[i] : undefined;
                 if (!sAns) emptyCount++;
                 else if (sAns === q.correct) correctCount++;
                 else wrongCount++;
             });
 
-            const score = Math.round((correctCount / curExam.questions.length) * 100);
+            const score = Math.round((correctCount / (curExam.questions.length || 1)) * 100);
             const net = (correctCount - (wrongCount / 4)).toFixed(2);
 
             document.getElementById('res-score-circle').innerText = `%${score}`;
@@ -2367,7 +2553,7 @@
             document.getElementById('res-stat-net').innerText = net;
 
             document.getElementById('res-content').innerHTML = curExam.questions.map((q, i) => {
-                const sAns = sub.answers[i] || '-';
+                const sAns = (sub.answers && sub.answers[i]) || '-';
                 const isC = sAns === q.correct;
                 const isEmp = sAns === '-';
                 return `
@@ -2414,7 +2600,7 @@
             document.getElementById('modal-student-name').innerText = sub.student_name + " - Karne Raporu";
             document.getElementById('modal-exam-subtitle').innerText = curExam.title;
             document.getElementById('modal-answers-content').innerHTML = curExam.questions.map((q, i) => {
-                const sAns = sub.answers[i] || '-';
+                const sAns = (sub.answers && sub.answers[i]) || '-';
                 const isC = sAns === q.correct;
                 return `
                     <div class="glass p-3.5 rounded-2xl border-2 ${isC ? 'border-emerald-500/20 bg-emerald-500/5' : 'border-rose-500/20 bg-rose-500/5'}">
